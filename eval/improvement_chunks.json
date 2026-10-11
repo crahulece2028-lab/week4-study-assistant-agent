@@ -1,0 +1,27 @@
+{
+  "top_k": 4,
+  "n_questions": 14,
+  "configs": [
+    {
+      "chunk_size": 400,
+      "chunk_overlap": 100,
+      "n_chunks": 48,
+      "hit_rate": 1.0,
+      "mean_top1_cosine": 0.593
+    },
+    {
+      "chunk_size": 800,
+      "chunk_overlap": 150,
+      "n_chunks": 27,
+      "hit_rate": 1.0,
+      "mean_top1_cosine": 0.5535
+    },
+    {
+      "chunk_size": 1200,
+      "chunk_overlap": 240,
+      "n_chunks": 17,
+      "hit_rate": 1.0,
+      "mean_top1_cosine": 0.5167
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "documents": 8,
+  "pages": 8,
+  "chunks": 27,
+  "chunk_size": 800,
+  "chunk_overlap": 150,
+  "chunk_chars_min": 153,
+  "chunk_chars_mean": 652,
+  "chunk_chars_max": 799,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_dim": 384,
+  "index_type": "FAISS IndexFlatIP (cosine via L2-normalised vectors)",
+  "documents_list": [
+    "01_signals_and_systems",
+    "02_digital_electronics",
+    "03_control_systems",
+    "04_communication_systems",
+    "05_semiconductor_devices",
+    "06_transmission_lines",
+    "07_microprocessors",
+    "08_digital_signal_processing"
+  ],
+  "example_chunks": [
+    {
+      "source": "01_signals_and_systems",
+      "page": 1,
+      "chars": 739,
+      "preview": "Signals and Systems - Lecture Notes 1. Signals and Classification A signal is a function of one or more independent variables that carries information about the state of a physical system. Continuous-time signals are def"
+    },
+    {
+      "source": "01_signals_and_systems",
+      "page": 1,
+      "chars": 776,
+      "preview": "even part (x(t) + x(-t))/2 and an odd part (x(t) - x(-t))/2. The unit impulse delta(t) has unit area and zero width; the unit step u(t) is 0 for t < 0 and 1 for t >= 0, and du(t)/dt = delta(t). 2. LTI Systems and Convolu"
+    },
+    {
+      "source": "01_signals_and_systems",
+      "page": 1,
+      "chars": 736,
+      "preview": "systems in cascade can be combined by convolving their impulse responses h(t) = h1(t) * h2(t). For an LTI system the output to a complex exponential e^(j*omega*t) is the same exponential scaled by the frequency response "
+    }
+  ]
+}

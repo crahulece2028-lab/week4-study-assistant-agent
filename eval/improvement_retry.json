@@ -1,0 +1,16 @@
+{
+  "with_retry_loop": {
+    "floor": 0.0,
+    "mean_spans": 8.0,
+    "mean_ms": 49.0,
+    "refusal_rate": 0.6667,
+    "trace_png": "D:\\OneDrive\\\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\\Default Project\\week4\\study_assistant_agent\\docs\\traces\\eval-q17-retry-loop.png"
+  },
+  "with_floor": {
+    "floor": 0.15,
+    "mean_spans": 4.0,
+    "mean_ms": 22.5,
+    "refusal_rate": 0.6667
+  },
+  "trace_png": "D:\\OneDrive\\\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\\Default Project\\week4\\study_assistant_agent\\docs\\traces\\eval-q17-retry-loop.png"
+}

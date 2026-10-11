@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Assistant Agent - Week 4 Capstone</title>
+<style>
+  :root {
+    --ink: #12151a; --muted: #5b6470; --line: #e3e7ec; --accent: #1a73e8;
+    --green: #137333; --orange: #b06000; --bg: #fbfcfd;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+  }
+  .deck { height: 100vh; display: flex; flex-direction: column; }
+  .slide { display: none; flex: 1; padding: 5vh 8vw; overflow: auto; }
+  .slide.active { display: block; animation: fade .18s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; } }
+  h1 { font-size: 3rem; line-height: 1.08; margin: 0 0 .4em; letter-spacing: -.02em; }
+  h2 { font-size: 1.9rem; margin: 0 0 .5em; letter-spacing: -.01em; }
+  h2 .n { color: var(--accent); font-variant-numeric: tabular-nums; margin-right: .5em; }
+  p, li { font-size: 1.18rem; line-height: 1.55; color: var(--ink); }
+  .muted { color: var(--muted); }
+  ul { max-width: 60ch; }
+  li { margin: .35em 0; }
+  code, pre { font-family: "Cascadia Code", ui-monospace, Consolas, monospace; }
+  code { background: #eef2f7; padding: .08em .35em; border-radius: 4px; font-size: .95em; }
+  .kicker { color: var(--accent); font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+            font-size: .82rem; }
+  .grid { display: grid; gap: 1.4rem; }
+  .cols2 { grid-template-columns: 1fr 1fr; }
+  .cols3 { grid-template-columns: repeat(3, 1fr); }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.25rem; background: #fff; }
+  .card h3 { margin: 0 0 .35rem; font-size: 1.05rem; }
+  .card p { font-size: 1rem; margin: .2rem 0; }
+  table { border-collapse: collapse; width: 100%; max-width: 70ch; font-size: 1.08rem; }
+  th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .big { font-size: 2.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .ok { color: var(--green); font-weight: 700; }
+  .warn { color: var(--orange); font-weight: 700; }
+  img { max-width: 100%; max-height: 62vh; border-radius: 10px; border: 1px solid var(--line); background: #fff; }
+  pre.flow { background: #0f172a; color: #d7e0ea; padding: 1.1rem 1.3rem; border-radius: 12px;
+             font-size: 1rem; line-height: 1.6; overflow: auto; }
+  footer { display: flex; justify-content: space-between; align-items: center;
+           padding: .6rem 8vw; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #cfd6de; margin: 0 3px; }
+  .dot.on { background: var(--accent); }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide active">
+    <div class="kicker">Week 4 &middot; Capstone</div>
+    <h1>ECE Study Assistant</h1>
+    <p class="muted" style="font-size:1.4rem;max-width:52ch">A LangGraph retrieval-augmented agent over
+    eight lecture-note documents - with tool calls, an inspectable trace, and a measured evaluation.</p>
+    <p class="muted">4.1 RAG &middot; 4.2 Workflow &middot; 4.3 Evaluation &middot; 4.4 Demo</p>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">01</span>The problem</h2>
+    <ul>
+      <li>Question answering over a fixed set of ECE notes, where the answer must be <strong>grounded and cited</strong>.</li>
+      <li>Some questions need a <strong>tool</strong> (a calculation, a formula), some are small talk, some the notes cannot answer at all.</li>
+      <li>Must run <strong>with no API key</strong> so it and its evaluation are reproducible, and upgrade to a hosted model when a key exists.</li>
+      <li>The interesting part is the <strong>process</strong>: route, retrieve, grade, retry - all visible.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.1</span>Retrieval</h2>
+    <pre class="flow">PDF -&gt; PyPDFLoader -&gt; split(800/150) -&gt; all-MiniLM-L6-v2 (384-d, L2) -&gt; FAISS IndexFlatIP</pre>
+    <div class="grid cols3" style="margin-top:1.3rem">
+      <div class="card"><h3>8 documents &middot; 27 chunks</h3><p class="muted">mean chunk 652 chars; generated corpus, fully checkable</p></div>
+      <div class="card"><h3>Exact cosine</h3><p class="muted">IndexFlatIP over normalised vectors - the score in every trace is a real cosine</p></div>
+      <div class="card"><h3>Local &amp; offline</h3><p class="muted">no key, no cost; Unicode-safe FAISS persistence in store.py</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.2</span>The agent is a graph, not a chain</h2>
+    <pre class="flow">START -&gt; router -+-> retrieve -&gt; grade -+-> generate -&gt; END
+                 |                      +-&gt; rewrite -&gt; retrieve   (bounded retry)
+                 +-&gt; tool -----&gt; generate -&gt; END
+                 +-&gt; direct ---&gt; END</pre>
+    <ul style="margin-top:1.2rem">
+      <li>Conditional <strong>and cyclic</strong>: routing is runtime; a failed grade rewrites and re-retrieves.</li>
+      <li><code>AgentLLM</code> exposes <code>route/grade/rewrite/generate</code> - the graph never knows if a hosted model or the offline scorer answers.</li>
+    </ul>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.2</span>Workflow diagram</h2>
+    <img src="4.2_workflow.png" alt="LangGraph topology">
+    <p class="muted">Rendered from the compiled graph itself, so it cannot drift from the code.</p>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.2</span>Tools, kept offline and boring</h2>
+    <div class="grid cols2">
+      <div class="card"><h3>calculator</h3><p class="muted">Numeric evaluation via a <strong>restricted AST walk</strong> - never <code>eval</code>, because tool input is untrusted model output. Handles <code>pi</code>, <code>e</code>, <code>^</code>.</p></div>
+      <div class="card"><h3>formula_lookup</h3><p class="muted">A curated, sourced table of canonical ECE formulas (Nyquist, Shannon, Carson, VSWR, ...). Cites the notes; keeps the evaluation reproducible.</p></div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.3</span>Evaluation - 22 labelled questions</h2>
+    <table>
+      <tr><th>Metric</th><th class="num">Value</th></tr>
+      <tr><td>routing accuracy</td><td class="num ok">100%</td></tr>
+      <tr><td>retrieval hit rate</td><td class="num ok">100%</td></tr>
+      <tr><td>answer keyword rate</td><td class="num warn">93%</td></tr>
+      <tr><td>tool success rate</td><td class="num ok">100%</td></tr>
+      <tr><td>out-of-scope refusal rate</td><td class="num warn">67%</td></tr>
+      <tr><td>latency (median)</td><td class="num">26 ms</td></tr>
+    </table>
+    <p class="muted" style="margin-top:.8rem">The three 100%s are a ceiling from a small, self-authored set - the two that are not perfect are the informative ones.</p>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.3</span>The two real failures</h2>
+    <div class="grid cols2">
+      <div class="card">
+        <h3 class="warn">q20 - Friis equation (refusal 67%)</h3>
+        <p class="muted">Not in the corpus, but "transmission ... formula" makes retrieval return the
+        transmission-lines notes and lexical grading passes it. Result: a fluent, <strong>cited, wrong</strong>
+        answer. Root cause - overlap cannot separate "on topic" from "answers it".</p>
+      </div>
+      <div class="card">
+        <h3 class="warn">q22 - FM bandwidth (keyword 93%)</h3>
+        <p class="muted">Retrieval was <strong>correct</strong>; the extractive generator quoted the
+        neighbouring sentence instead of Carson's rule. A generation-ranking failure, not a retrieval one.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.3</span>Ablations - decisions, measured</h2>
+    <div class="grid cols2">
+      <div class="card">
+        <h3>Chunk size</h3>
+        <p class="muted">hit@4 = 100% at 400/800/1200. Smaller chunks sharpen top-1 cosine (0.593 vs 0.517)
+        at ~3x the index size. 800/150 kept as a non-degenerate default.</p>
+      </div>
+      <div class="card">
+        <h3>Retry floor</h3>
+        <p class="muted">Low-coverage floor skips hopeless retries: <strong>8 -&gt; 4 nodes</strong>,
+        <strong>49 -&gt; 22 ms</strong> per unanswerable question, same correctness.</p>
+      </div>
+    </div>
+    <img src="../eval/improvement.png" alt="ablations" style="margin-top:1rem;max-height:40vh">
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.3</span>Traces</h2>
+    <p>Every node records a span; <code>eval/local_tracer.py</code> renders it to a waterfall - the local
+    stand-in for the LangSmith run view. With <code>LANGSMITH_API_KEY</code> set, the same runs go to LangSmith.</p>
+    <p class="muted">Grounded &middot; tool-only &middot; refusal &middot; and a retry loop (floor off) in <code>docs/traces/</code>.</p>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">4.4</span>Demo</h2>
+    <ul>
+      <li>Streamlit chat: answer, confidence badge, citations.</li>
+      <li>Full <strong>agent trace + retrieved chunks</strong> expandable under every answer.</li>
+      <li>Sidebar reports the live backend, embeddings, retrieval settings and index stats.</li>
+    </ul>
+    <pre class="flow">streamlit run src/app.py</pre>
+  </section>
+
+  <section class="slide">
+    <h2><span class="n">05</span>Limitations &amp; next</h2>
+    <ul>
+      <li>Small self-authored corpus/test set; lexical grader; extractive default answers; single-run numbers.</li>
+      <li><strong>Next:</strong> generative grader (fix q20) &rarr; cross-encoder reranker (fix q22) &rarr; bigger corpus &rarr; web-search tool.</li>
+    </ul>
+    <p class="muted">Everything runs with no API key; set <code>GROQ_API_KEY</code> / <code>LANGSMITH_API_KEY</code> to upgrade.</p>
+  </section>
+
+  <footer>
+    <span>ECE Study Assistant &middot; Week 4 capstone</span>
+    <span id="dots"></span>
+    <span><kbd>←</kbd> <kbd>→</kbd> to navigate</span>
+  </footer>
+</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide')];
+  const dots = document.getElementById('dots');
+  let i = 0;
+  slides.forEach(() => dots.appendChild(document.createElement('span')).className = 'dot');
+  const dotEls = [...dots.children];
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    dotEls.forEach((d, k) => d.classList.toggle('on', k === i));
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') show(i + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(i - 1);
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  document.addEventListener('click', e => {
+    if (e.clientX > window.innerWidth * 0.5) show(i + 1); else show(i - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>

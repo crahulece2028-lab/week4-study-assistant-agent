@@ -1,0 +1,25 @@
+# Core framework
+langchain==1.4.4
+langchain-core==1.6.9
+langchain-community==0.4.2
+langchain-text-splitters
+langgraph==1.2.14
+langsmith==0.14.7
+
+# LLM providers (optional - the app runs offline without a key)
+langchain-groq
+langchain-google-genai
+
+# Retrieval
+faiss-cpu>=1.9
+sentence-transformers>=3.0
+pypdf>=5.0
+
+# App
+streamlit>=1.40
+python-dotenv>=1.0
+
+# Reporting / figures
+matplotlib
+pandas
+reportlab

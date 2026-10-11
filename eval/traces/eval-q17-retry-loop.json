@@ -1,0 +1,52 @@
+{
+  "question": "Who won the 2018 FIFA World Cup?",
+  "total_ms": 17.8,
+  "spans": [
+    {
+      "node": "router",
+      "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+      "elapsed_ms": 0.1,
+      "start_ms": 0.0,
+      "end_ms": 0.1
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'What is the formula for the Friis transmission equation?' -> 06_transmission_lines(0.45), 06_transmission_lines(0.42), 08_digital_signal_processing(0.33)",
+      "elapsed_ms": 17.1,
+      "hits": [
+        {
+          "source": "06_transmission_lines",
+          "score": 0.4512
+        },
+        {
+          "source": "06_transmission_lines",
+          "score": 0.4203
+        },
+        {
+          "source": "08_digital_signal_processing",
+          "score": 0.3317
+        },
+        {
+          "source": "01_signals_and_systems",
+          "score": 0.3162
+        }
+      ],
+      "start_ms": 0.1,
+      "end_ms": 17.2
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=True (question-term coverage 50%; missing formula, friis)",
+      "elapsed_ms": 0.2,
+      "start_ms": 17.2,
+      "end_ms": 17.4
+    },
+    {
+      "node": "generate",
+      "detail": "grounded answer, 266 chars",
+      "elapsed_ms": 0.4,
+      "start_ms": 17.4,
+      "end_ms": 17.8
+    }
+  ]
+}

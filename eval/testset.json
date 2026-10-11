@@ -1,0 +1,30 @@
+{
+  "description": "22-question evaluation set for the Study Assistant Agent. Questions q01-q16 are single-hop and intended to be answerable; q17-q18 are out-of-scope; q19-q22 are deliberately hard (a two-document synthesis, an ECE-sounding formula that is *not* in the corpus, a numeric lookup, and a rule-based numeric answer). The hard questions are where the failure analysis in docs/4.3 comes from.",
+  "chunk_size": 800,
+  "chunk_overlap": 150,
+  "top_k": 4,
+  "questions": [
+    {"id": "q01", "route": "retrieve", "source": "01_signals_and_systems", "keywords": ["nyquist"], "in_scope": true, "question": "What is the Nyquist rate and why does it matter?"},
+    {"id": "q02", "route": "retrieve", "source": "01_signals_and_systems", "keywords": ["alias"], "in_scope": true, "question": "What happens if a signal is sampled below the Nyquist rate?"},
+    {"id": "q03", "route": "retrieve", "source": "08_digital_signal_processing", "keywords": ["region of convergence"], "in_scope": true, "question": "Explain the region of convergence of the Z-transform."},
+    {"id": "q04", "route": "retrieve", "source": "08_digital_signal_processing", "keywords": ["resolution"], "in_scope": true, "question": "What sets the frequency resolution of a DFT?"},
+    {"id": "q05", "route": "retrieve", "source": "03_control_systems", "keywords": ["settling"], "in_scope": true, "question": "How do I work out the settling time of a second order system?"},
+    {"id": "q06", "route": "retrieve", "source": "03_control_systems", "keywords": ["kp"], "in_scope": true, "question": "What does the PID control law look like?"},
+    {"id": "q07", "route": "retrieve", "source": "06_transmission_lines", "keywords": ["gamma"], "in_scope": true, "question": "How is the reflection coefficient of a mismatched load computed?"},
+    {"id": "q08", "route": "retrieve", "source": "06_transmission_lines", "keywords": ["quarter-wave"], "in_scope": true, "question": "How does a quarter-wave transformer match a transmission line?"},
+    {"id": "q09", "route": "retrieve", "source": "05_semiconductor_devices", "keywords": ["breakdown"], "in_scope": true, "question": "How does a Zener diode regulate a voltage?"},
+    {"id": "q10", "route": "retrieve", "source": "05_semiconductor_devices", "keywords": ["gm"], "in_scope": true, "question": "What is the transconductance of a MOSFET in saturation?"},
+    {"id": "q11", "route": "retrieve", "source": "04_communication_systems", "keywords": ["modulation index"], "in_scope": true, "question": "What is the modulation index for amplitude modulation?"},
+    {"id": "q12", "route": "tool", "tool": "calculator", "keywords": ["0.314"], "in_scope": true, "question": "calculate 2*pi*50*0.001"},
+    {"id": "q13", "route": "tool", "tool": "calculator", "keywords": ["25"], "in_scope": true, "question": "calculate 3^2 + 4^2"},
+    {"id": "q14", "route": "tool", "tool": "formula_lookup", "keywords": ["vswr"], "in_scope": true, "question": "What is the formula for VSWR?"},
+    {"id": "q15", "route": "tool", "tool": "formula_lookup", "keywords": ["2 * f_max"], "in_scope": true, "question": "What is the formula for the Nyquist rate?"},
+    {"id": "q16", "route": "direct", "keywords": [], "in_scope": true, "question": "hello"},
+    {"id": "q17", "route": "retrieve", "in_scope": false, "keywords": [], "question": "Who won the 2018 FIFA World Cup?"},
+    {"id": "q18", "route": "retrieve", "in_scope": false, "keywords": [], "question": "What is the capital of France?"},
+    {"id": "q19", "route": "retrieve", "source": "01_signals_and_systems", "keywords": ["nyquist", "shannon"], "in_scope": true, "question": "Compare the Nyquist rate with Shannon's channel capacity."},
+    {"id": "q20", "route": "retrieve", "in_scope": false, "keywords": [], "question": "What is the formula for the Friis transmission equation?"},
+    {"id": "q21", "route": "retrieve", "source": "07_microprocessors", "keywords": ["40", "microsecond"], "in_scope": true, "question": "How many pins does the 8051 have and what is its machine cycle time?"},
+    {"id": "q22", "route": "retrieve", "source": "04_communication_systems", "keywords": ["carson"], "in_scope": true, "question": "How is the bandwidth of an FM signal estimated from its message and deviation?"}
+  ]
+}

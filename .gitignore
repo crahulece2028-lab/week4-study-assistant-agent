@@ -1,0 +1,23 @@
+# secrets
+.env
+
+# generated index (rebuild with: python src/ingest.py)
+index/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# model / HF cache
+.cache/
+*.safetensors
+
+# streamlit
+.streamlit/secrets.toml
+
+# misc
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,27 @@
+{
+  "question": "calculate 2*pi*50*0.001",
+  "total_ms": 0.7,
+  "spans": [
+    {
+      "node": "router",
+      "detail": "-> tool: an arithmetic expression was detected, deferring to the calculator tool rather than the notes",
+      "elapsed_ms": 0.5,
+      "start_ms": 0.0,
+      "end_ms": 0.5
+    },
+    {
+      "node": "tool",
+      "detail": "calculator(2*pi*50*0.001) ok=True",
+      "elapsed_ms": 0.2,
+      "start_ms": 0.5,
+      "end_ms": 0.7
+    },
+    {
+      "node": "generate",
+      "detail": "tool answer, 47 chars",
+      "elapsed_ms": 0.0,
+      "start_ms": 0.7,
+      "end_ms": 0.7
+    }
+  ]
+}
