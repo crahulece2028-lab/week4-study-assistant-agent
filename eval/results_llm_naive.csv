@@ -1,0 +1,23 @@
+id,route_ok,expected_route,route,retrieval_hit,keyword_hit,behaviour_ok,n_spans,wall_ms,question
+q01,False,retrieve,direct,False,True,False,2,1304.5,What is the Nyquist rate and why does it matter?
+q02,False,retrieve,direct,False,False,False,2,1227.0,What happens if a signal is sampled below the Nyquist rate?
+q03,True,retrieve,retrieve,True,True,True,4,23821.4,Explain the region of convergence of the Z-transform.
+q04,False,retrieve,direct,False,True,False,2,1790.0,What sets the frequency resolution of a DFT?
+q05,False,retrieve,tool,False,True,False,3,953.7,How do I work out the settling time of a second order system?
+q06,False,retrieve,tool,False,True,False,3,1272.1,What does the PID control law look like?
+q07,False,retrieve,tool,False,True,False,3,1003.7,How is the reflection coefficient of a mismatched load computed?
+q08,False,retrieve,direct,False,False,False,2,1358.8,How does a quarter-wave transformer match a transmission line?
+q09,True,retrieve,retrieve,True,True,True,4,3318.1,How does a Zener diode regulate a voltage?
+q10,False,retrieve,tool,False,True,False,3,884.4,What is the transconductance of a MOSFET in saturation?
+q11,False,retrieve,tool,False,True,False,3,891.0,What is the modulation index for amplitude modulation?
+q12,True,tool,tool,,True,True,3,534.8,calculate 2*pi*50*0.001
+q13,True,tool,tool,,True,True,3,586.2,calculate 3^2 + 4^2
+q14,True,tool,tool,,True,True,3,1241.6,What is the formula for VSWR?
+q15,True,tool,tool,,True,True,3,802.4,What is the formula for the Nyquist rate?
+q16,True,direct,direct,,,True,2,1299.9,hello
+q17,False,retrieve,direct,,,False,2,3769.9,Who won the 2018 FIFA World Cup?
+q18,False,retrieve,direct,,,False,2,3575.0,What is the capital of France?
+q19,True,retrieve,retrieve,True,True,True,4,19382.4,Compare the Nyquist rate with Shannon's channel capacity.
+q20,False,retrieve,tool,,,False,3,2044.7,What is the formula for the Friis transmission equation?
+q21,True,retrieve,retrieve,True,True,True,4,18516.6,How many pins does the 8051 have and what is its machine cycle time?
+q22,True,retrieve,retrieve,True,True,True,4,18559.3,How is the bandwidth of an FM signal estimated from its message and deviation?

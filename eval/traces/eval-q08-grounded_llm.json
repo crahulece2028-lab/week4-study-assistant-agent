@@ -1,0 +1,52 @@
+{
+  "question": "How does a quarter-wave transformer match a transmission line?",
+  "total_ms": 19253.6,
+  "spans": [
+    {
+      "node": "router",
+      "detail": "-> retrieve: Substantive question about transmission line matching requiring note content.",
+      "elapsed_ms": 4714.3,
+      "start_ms": 0.0,
+      "end_ms": 4714.3
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'How does a quarter-wave transformer match a transmission lin' -> 06_transmission_lines(0.59), 06_transmission_lines(0.53), 08_digital_signal_processing(0.28)",
+      "elapsed_ms": 49.5,
+      "hits": [
+        {
+          "source": "06_transmission_lines",
+          "score": 0.5891
+        },
+        {
+          "source": "06_transmission_lines",
+          "score": 0.5304
+        },
+        {
+          "source": "08_digital_signal_processing",
+          "score": 0.2838
+        },
+        {
+          "source": "01_signals_and_systems",
+          "score": 0.2751
+        }
+      ],
+      "start_ms": 4714.3,
+      "end_ms": 4763.8
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=True (Passage explicitly explains that a quarter-wave transformer with impedance Z0' = sqrt(Z0*ZL) matches a load to a transmission line.)",
+      "elapsed_ms": 7006.5,
+      "start_ms": 4763.8,
+      "end_ms": 11770.3
+    },
+    {
+      "node": "generate",
+      "detail": "grounded answer, 389 chars",
+      "elapsed_ms": 7483.3,
+      "start_ms": 11770.3,
+      "end_ms": 19253.6
+    }
+  ]
+}

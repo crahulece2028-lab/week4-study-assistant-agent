@@ -250,11 +250,28 @@ class OfflineLLM:
 
 
 # --------------------------------------------------------------- prompt implementation
-ROUTE_SYS = """You are the router in a study-assistant agent over ECE lecture notes.
-Classify the user's question into exactly one route:
-- RETRIEVE: the question is about the lecture notes and needs the documents.
-- TOOL: the question needs a calculation or a formula/constant lookup.
-- DIRECT: a greeting, meta-question, or anything answerable without the notes.
+ROUTE_SYS = """You are the router in a study-assistant agent whose answers MUST come from a fixed
+set of eight ECE lecture-note PDFs (signals & systems, digital electronics, control systems,
+communications, semiconductors, transmission lines, microprocessors, DSP). The agent cites the
+notes; it must never answer from its own knowledge.
+
+Choose exactly one route:
+- DIRECT: ONLY a greeting, thanks, or a meta-question about the assistant itself
+  (e.g. "hi", "thanks", "who are you", "what can you do"). Nothing else goes here.
+- TOOL: the question is a bare arithmetic expression to evaluate, OR the question literally
+  contains the word "formula" / "equation" / "expression" AND names one of these constants the
+  formula tool knows: nyquist, shannon, settling, overshoot, pid, vswr, reflection, cutoff,
+  modulation, bandwidth, fft, zener, transconductance, damping, quarter-wave, carson.
+  Do NOT route to TOOL merely because the topic has a formula: only an explicit formula request
+  or a bare calculation qualifies. "What is X?" / "How is X computed?" stay RETRIEVE.
+- RETRIEVE: every other substantive question. Choose RETRIEVE for any question about the note
+  subjects *even if you already know the answer* — the agent must answer from the notes with a
+  citation, not from memory. Also choose RETRIEVE for substantive questions that fall outside
+  these subjects (the relevance grader will reject those and the agent will decline).
+
+Only arithmetic expressions and explicit formula requests (with a key from the list above) go to
+TOOL. Never route a substantive question to DIRECT.
+
 Reply in exactly this format, nothing else:
 ROUTE: <RETRIEVE|TOOL|DIRECT>
 TOOL: <calculator|formula_lookup|none>

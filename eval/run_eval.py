@@ -1,4 +1,4 @@
-"""Task 4.3: run the evaluation set and write the results + trace artifacts.
+﻿"""Task 4.3: run the evaluation set and write the results + trace artifacts.
 
     python eval/run_eval.py
 
@@ -11,6 +11,7 @@ in by hand.
 """
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import statistics as stats
@@ -30,14 +31,30 @@ import graph  # noqa: E402
 import local_tracer  # noqa: E402
 
 REFUSAL_MARKERS = ("could not find", "not find this", "will not guess", "don't know",
-                   "do not know", "not in the provided", "unable to find")
+                   "do not know", "not in the provided", "unable to find",
+                   "does not contain", "doesn't contain", "not contain", "no information",
+                   "cannot answer", "can't answer", "cannot give", "not provided",
+                   "unable to answer", "cannot be answered")
+
+# Answers can carry typographic dashes/quotes from the source PDFs or the chat model
+# ("quarter-wave" with a non-breaking hyphen); normalise them before substring checks.
+_DASHES = {ord(c): "-" for c in "\u2010\u2011\u2012\u2013\u2014\u2212\u1806"}
+_DASHES.update({ord("\u2019"): "'", ord("\u2018"): "'", ord("\u201c"): '"', ord("\u201d"): '"'})
+
+# The chat model often answers with LaTeX ("K_{p}", "g_m"); drop the markup punctuation so a
+# keyword like "kp" or "gm" still matches the concept the answer actually contains.
+_LATEX = str.maketrans("", "", "\\_{}$")
+
+
+def normalise(text: str) -> str:
+    return text.translate(_DASHES).translate(_LATEX)
 
 
 def load_testset() -> dict:
     return json.loads((HERE / "testset.json").read_text(encoding="utf-8"))
 
 
-def evaluate() -> dict:
+def evaluate(suffix: str = "") -> dict:
     testset = load_testset()
     # Warm up once so the reported latency is steady-state, not model-load. The cost is real and
     # is reported separately as `first_run_warmup`.
@@ -52,7 +69,7 @@ def evaluate() -> dict:
 
         answer = final.get("answer", "") or ""
         sources = final.get("sources", []) or []
-        low = answer.lower()
+        low = normalise(answer).lower()
         route_ok = final.get("route") == q["route"]
 
         if q.get("in_scope", True) is False:
@@ -61,11 +78,11 @@ def evaluate() -> dict:
             kw = None
         elif q["route"] == "retrieve":
             hit = q["source"] in sources
-            kw = any(k.lower() in low for k in q.get("keywords", []))
+            kw = any(normalise(k).lower() in low for k in q.get("keywords", []))
             behaviour_ok = hit and kw
         elif q["route"] == "tool":
             hit = None
-            kw = any(k.lower() in low for k in q.get("keywords", []))
+            kw = any(normalise(k).lower() in low for k in q.get("keywords", []))
             behaviour_ok = kw and final.get("tool_ok", False)
         else:  # direct
             hit = None
@@ -122,10 +139,10 @@ def evaluate() -> dict:
         "embedding_model": config.EMBED_MODEL,
     }
 
-    (HERE / "results.json").write_text(
+    (HERE / f"results{suffix}.json").write_text(
         json.dumps({"metrics": metrics, "rows": rows}, indent=2), encoding="utf-8")
 
-    with (HERE / "results.csv").open("w", newline="", encoding="utf-8") as fh:
+    with (HERE / f"results{suffix}.csv").open("w", newline="", encoding="utf-8") as fh:
         w = csv.writer(fh)
         w.writerow(["id", "route_ok", "expected_route", "route", "retrieval_hit",
                     "keyword_hit", "behaviour_ok", "n_spans", "wall_ms", "question"])
@@ -134,11 +151,11 @@ def evaluate() -> dict:
                         r["retrieval_hit"], r["keyword_hit"], r["behaviour_ok"],
                         r["n_spans"], r["wall_ms"], r["question"]])
 
-    (HERE / "summary.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    (HERE / f"summary{suffix}.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     return {"metrics": metrics, "rows": rows}
 
 
-def render_representative_traces(rows: list[dict]) -> list[dict]:
+def render_representative_traces(rows: list[dict], suffix: str = "") -> list[dict]:
     """Four deterministic traces: a grounded answer, a second grounded answer from another doc,
     a tool call, and an honest refusal. The retry-loop trace is produced by
     `improvement_experiment.py`, which runs the same question with the floor disabled."""
@@ -149,13 +166,17 @@ def render_representative_traces(rows: list[dict]) -> list[dict]:
     for qid, tag in picks:
         row = by_id.get(qid)
         if row:
-            out.append(local_tracer.render(row["trace"], row["question"], tag=tag))
+            out.append(local_tracer.render(row["trace"], row["question"], tag=tag + suffix))
     return out
 
 
 def main() -> None:
-    result = evaluate()
-    traces = render_representative_traces(result["rows"])
+    parser = argparse.ArgumentParser(description="Run the 4.3 evaluation set.")
+    parser.add_argument("--suffix", default="",
+                        help="suffix for output files, e.g. '_llm' -> summary_llm.json")
+    args = parser.parse_args()
+    result = evaluate(args.suffix)
+    traces = render_representative_traces(result["rows"], args.suffix)
     m = result["metrics"]
     print(f"questions           {m['n_questions']}")
     print(f"routing accuracy    {m['routing_accuracy']:.0%}")

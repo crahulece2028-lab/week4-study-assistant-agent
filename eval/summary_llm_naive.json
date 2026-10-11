@@ -1,0 +1,19 @@
+{
+  "n_questions": 22,
+  "routing_accuracy": 0.4545,
+  "retrieval_hit_rate": 0.3571,
+  "answer_keyword_rate": 0.8571,
+  "tool_success_rate": 1.0,
+  "direct_ok_rate": 1.0,
+  "out_of_scope_refusal_rate": 0.0,
+  "grounded_confidence_rate": 0.2857,
+  "latency_ms": {
+    "first_run_warmup": 1304.5,
+    "mean": 5087.3,
+    "median": 1299.9,
+    "p95": 18559.3
+  },
+  "langsmith_traced_remotely": false,
+  "llm_mode": "groq",
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+}

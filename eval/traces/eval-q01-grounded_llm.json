@@ -1,0 +1,52 @@
+{
+  "question": "What is the Nyquist rate and why does it matter?",
+  "total_ms": 2771.4,
+  "spans": [
+    {
+      "node": "router",
+      "detail": "-> retrieve: The question asks for an explanation of a concept, not a direct calculation or formula request.",
+      "elapsed_ms": 836.0,
+      "start_ms": 0.0,
+      "end_ms": 836.0
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'What is the Nyquist rate and why does it matter?' -> 01_signals_and_systems(0.43), 04_communication_systems(0.34), 01_signals_and_systems(0.33)",
+      "elapsed_ms": 80.4,
+      "hits": [
+        {
+          "source": "01_signals_and_systems",
+          "score": 0.4336
+        },
+        {
+          "source": "04_communication_systems",
+          "score": 0.3437
+        },
+        {
+          "source": "01_signals_and_systems",
+          "score": 0.3266
+        },
+        {
+          "source": "04_communication_systems",
+          "score": 0.271
+        }
+      ],
+      "start_ms": 836.0,
+      "end_ms": 916.4
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=True (Passage defines Nyquist rate (2*f_max) and explains its importance for avoiding aliasing in sampling.)",
+      "elapsed_ms": 898.3,
+      "start_ms": 916.4,
+      "end_ms": 1814.7
+    },
+    {
+      "node": "generate",
+      "detail": "grounded answer, 433 chars",
+      "elapsed_ms": 956.7,
+      "start_ms": 1814.7,
+      "end_ms": 2771.4
+    }
+  ]
+}

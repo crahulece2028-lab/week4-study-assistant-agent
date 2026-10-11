@@ -4,6 +4,7 @@ Three scripts, all runnable with no API key:
 
 ```powershell
 python eval/run_eval.py                 # the 22-question set -> results.json / results.csv / summary.json + traces
+python eval/run_eval.py --suffix _llm   # same set via a hosted LLM (needs GROQ_API_KEY) -> results_llm.json / summary_llm.json + *_llm traces
 python eval/improvement_experiment.py   # chunk-size A/B and retry-policy A/B -> improvement_*.json + improvement.png
 python eval/local_tracer.py             # render one trace on its own (used as a module by the above)
 ```
@@ -21,6 +22,8 @@ active.
 | `run_eval.py` | runs the set, scores it, writes the results and a few trace images |
 | `results.json` / `results.csv` | per-question outcome + the metrics block |
 | `summary.json` | just the metrics |
+| `results_llm.json` / `summary_llm.json` | the same set run through the hosted LLM (`--suffix _llm`) |
+| `summary_llm_naive.json` | the first hosted run, before the router prompt was aligned to the agent's policy |
 | `local_tracer.py` | turns a `state["trace"]` list into `eval/traces/*.json` and `docs/traces/*.png` |
 | `improvement_experiment.py` | the two ablations below |
 | `improvement_chunks.json`, `improvement_retry.json`, `improvement.png` | their outputs |
@@ -34,7 +37,7 @@ active.
 | `answer_keyword_rate` | the answer contains at least one labelled keyword | in-scope `retrieve` questions |
 | `tool_success_rate` | tool route, the tool reported success, and the answer contains the expected value | `tool` questions |
 | `direct_ok_rate` | small talk answered without retrieval | `direct` questions |
-| `out_of_scope_refusal_rate` | the answer contains an explicit "not in the notes" refusal | questions labelled `in_scope: false` |
+| `out_of_scope_refusal_rate` | the answer contains an explicit refusal (a "could not find" / "does not contain" / "cannot answer" phrasing, matched after normalising typographic dashes and LaTeX markup) | questions labelled `in_scope: false` |
 | `grounded_confidence_rate` | the run ended with confidence `grounded` | in-scope `retrieve` questions |
 | `latency_ms` | wall-clock per question, after one warm-up call excluded as model-load | all |
 
@@ -53,6 +56,16 @@ offline grader is lexical. The two metrics that carry information are:
   real-but-irrelevant passage on transmission lines. See `docs/4.3_evaluation.md`.
 
 Both failures are analysed in `docs/4.3_evaluation.md`; neither is papered over.
+
+## Hosted-LLM run
+
+With `GROQ_API_KEY` set, `python eval/run_eval.py --suffix _llm` runs the identical set with the
+hosted model doing the routing, grading and generation. The first pass (kept as `summary_llm_naive.json`)
+scored 45% routing / 0% refusal because the model answered general-knowledge and out-of-scope
+questions from memory; after the router prompt was constrained to the agent's "answer from the notes"
+policy it matches the offline metrics while answering more questions correctly, at a median ~17 s per
+question. The full before/after table and the two graders' opposite failure modes are in
+`docs/4.3_evaluation.md`.
 
 ## The two ablations
 
