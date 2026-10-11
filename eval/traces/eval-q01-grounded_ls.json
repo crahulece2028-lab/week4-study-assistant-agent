@@ -1,0 +1,52 @@
+{
+  "question": "What is the Nyquist rate and why does it matter?",
+  "total_ms": 45.0,
+  "spans": [
+    {
+      "node": "router",
+      "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+      "elapsed_ms": 1.7,
+      "start_ms": 0.0,
+      "end_ms": 1.7
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'What is the Nyquist rate and why does it matter?' -> 01_signals_and_systems(0.43), 04_communication_systems(0.34), 01_signals_and_systems(0.33)",
+      "elapsed_ms": 41.9,
+      "hits": [
+        {
+          "source": "01_signals_and_systems",
+          "score": 0.4336
+        },
+        {
+          "source": "04_communication_systems",
+          "score": 0.3437
+        },
+        {
+          "source": "01_signals_and_systems",
+          "score": 0.3266
+        },
+        {
+          "source": "04_communication_systems",
+          "score": 0.271
+        }
+      ],
+      "start_ms": 1.7,
+      "end_ms": 43.6
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=True (question-term coverage 67%; missing matter)",
+      "elapsed_ms": 0.5,
+      "start_ms": 43.6,
+      "end_ms": 44.1
+    },
+    {
+      "node": "generate",
+      "detail": "grounded answer, 422 chars",
+      "elapsed_ms": 0.9,
+      "start_ms": 44.1,
+      "end_ms": 45.0
+    }
+  ]
+}

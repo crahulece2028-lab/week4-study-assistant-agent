@@ -1,0 +1,52 @@
+{
+  "question": "Who won the 2018 FIFA World Cup?",
+  "total_ms": 26.1,
+  "spans": [
+    {
+      "node": "router",
+      "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+      "elapsed_ms": 0.2,
+      "start_ms": 0.0,
+      "end_ms": 0.2
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'Who won the 2018 FIFA World Cup?' -> 05_semiconductor_devices(0.09), 05_semiconductor_devices(0.07), 06_transmission_lines(0.06)",
+      "elapsed_ms": 24.8,
+      "hits": [
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.0859
+        },
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.0702
+        },
+        {
+          "source": "06_transmission_lines",
+          "score": 0.0627
+        },
+        {
+          "source": "03_control_systems",
+          "score": 0.0511
+        }
+      ],
+      "start_ms": 0.2,
+      "end_ms": 25.0
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=False (question-term coverage 0%; missing 2018, cup, fifa, won, world)",
+      "elapsed_ms": 0.8,
+      "start_ms": 25.0,
+      "end_ms": 25.8
+    },
+    {
+      "node": "generate",
+      "detail": "low answer, 86 chars",
+      "elapsed_ms": 0.3,
+      "start_ms": 25.8,
+      "end_ms": 26.1
+    }
+  ]
+}

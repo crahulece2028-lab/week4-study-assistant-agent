@@ -78,6 +78,7 @@ def picture(path: Path, max_w: float, max_h: float) -> Image:
 
 def build() -> Path:
     summary = load(EVAL / "summary.json")
+    hosted = load(EVAL / "summary_llm.json")
     chunks = load(EVAL / "improvement_chunks.json")
     retry = load(EVAL / "improvement_retry.json")
     stats = load(DOCS / "ingest_stats.json")
@@ -127,24 +128,32 @@ def build() -> Path:
 
     el.append(PageBreak())
     el.append(Paragraph("4. Evaluation (4.3)", H1))
+    llat = hosted.get("latency_ms", {})
     el.append(Paragraph(
-        f"{summary.get('n_questions')}-question labelled set ({summary.get('llm_mode')} mode). "
-        f"Latency median {lat.get('median')} ms, p95 {lat.get('p95')} ms. LangSmith traced "
-        f"remotely: {summary.get('langsmith_traced_remotely')}.", BODY))
-    mrows = [["Metric", "Value"],
-             ["routing accuracy", f"{summary.get('routing_accuracy', 0):.0%}"],
-             ["retrieval hit rate", f"{summary.get('retrieval_hit_rate', 0):.0%}"],
-             ["answer keyword rate", f"{summary.get('answer_keyword_rate', 0):.0%}"],
-             ["tool success rate", f"{summary.get('tool_success_rate', 0):.0%}"],
-             ["out-of-scope refusal rate", f"{summary.get('out_of_scope_refusal_rate', 0):.0%}"]]
-    el.append(table(mrows, [260, 70]))
+        f"{summary.get('n_questions')}-question labelled set, run twice. <b>Offline</b> (no key): "
+        f"latency median {lat.get('median')} ms, p95 {lat.get('p95')} ms. <b>Hosted</b> (Groq "
+        f"openai/gpt-oss-120b): median {llat.get('median')} ms. Every run is sent to the "
+        f"week4-study-assistant LangSmith project; docs/langsmith_figures.py renders the live trees "
+        f"to docs/traces/langsmith-*.png.", BODY))
+    mrows = [["Metric", "offline", "Groq"],
+             ["routing accuracy", f"{summary.get('routing_accuracy', 0):.0%}",
+              f"{hosted.get('routing_accuracy', 0):.0%}"],
+             ["retrieval hit rate", f"{summary.get('retrieval_hit_rate', 0):.0%}",
+              f"{hosted.get('retrieval_hit_rate', 0):.0%}"],
+             ["answer keyword rate", f"{summary.get('answer_keyword_rate', 0):.0%}",
+              f"{hosted.get('answer_keyword_rate', 0):.0%}"],
+             ["tool success rate", f"{summary.get('tool_success_rate', 0):.0%}",
+              f"{hosted.get('tool_success_rate', 0):.0%}"],
+             ["out-of-scope refusal rate", f"{summary.get('out_of_scope_refusal_rate', 0):.0%}",
+              f"{hosted.get('out_of_scope_refusal_rate', 0):.0%}"]]
+    el.append(table(mrows, [250, 55, 55]))
     el.append(Paragraph(
         "The three 100% metrics are a ceiling from a small, self-authored set - the two below 100% are "
         "the informative results. <b>q20 (Friis equation)</b>: absent from the corpus, but 'transmission "
         "... formula' passes lexical relevance grading, so the agent gives a fluent, cited, wrong "
-        "answer - the case for a generative grader. <b>q22 (FM bandwidth)</b>: retrieval was correct; "
-        "the extractive generator quoted the neighbouring sentence instead of Carson's rule - a "
-        "generation failure, not a retrieval one.", BODY))
+        "answer - the case for a generative grader (the Groq grader does catch it). <b>q22 (FM "
+        "bandwidth)</b>: retrieval was correct; the extractive generator quoted the neighbouring "
+        "sentence instead of Carson's rule - a generation failure, not a retrieval one.", BODY))
 
     el.append(Paragraph("4.1 Ablations", H2))
     crow = [["chunk / overlap", "chunks", "hit@4", "top-1 cos"]]
@@ -164,7 +173,9 @@ def build() -> Path:
         el.append(Paragraph("Figure 2. Chunking and retry-policy ablations.", CAP))
 
     el.append(Paragraph("5. Traces", H2))
-    for name, cap in [("eval-q01-grounded", "grounded answer, happy path"),
+    for name, cap in [("eval-q01-grounded", "grounded answer, happy path (local render)"),
+                      ("langsmith-q01-grounded", "the same path, from the live LangSmith trace"),
+                      ("langsmith-q20-friis-miss", "the q20 Friis failure, from LangSmith"),
                       ("eval-q17-retry-loop", "retry loop (floor off) on an unanswerable question")]:
         p = DOCS / "traces" / f"{name}.png"
         if p.exists():
@@ -181,7 +192,8 @@ def build() -> Path:
     el.append(Paragraph("7. Limitations", H1))
     for b in ["Small self-authored corpus and test set; the 100% metrics are ceilings, not estimates.",
               "A lexical relevance grader - the direct cause of the headline failure (q20).",
-              "Extractive default answering; a generative baseline was not run (no key available).",
+              "Extractive default answering; the Groq generative baseline (4.3) matches the offline "
+              "metrics on this set and is ~675x slower.",
               "Single-run measurements; no variance study."]:
         el.append(Paragraph(b, BULLET, bulletText="\u2022"))
 

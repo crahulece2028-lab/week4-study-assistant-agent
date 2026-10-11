@@ -1,0 +1,47 @@
+{
+  "project": "week4-study-assistant",
+  "n_traces_in_project": 25,
+  "figures": [
+    {
+      "tag": "q01-grounded",
+      "trace_id": "01a12bcd-d187-7e13-8861-de1872cd69a1",
+      "question": "What is the Nyquist rate and why does it matter?",
+      "total_ms": 72.8,
+      "n_nodes": 4,
+      "png": "langsmith-q01-grounded.png"
+    },
+    {
+      "tag": "q12-tool",
+      "trace_id": "01a12bcd-d422-7c71-aee0-66e0d0812699",
+      "question": "calculate 2*pi*50*0.001",
+      "total_ms": 18.3,
+      "n_nodes": 3,
+      "png": "langsmith-q12-tool.png"
+    },
+    {
+      "tag": "q17-refusal",
+      "trace_id": "01a12bcd-d483-7d22-8ec8-4dff74e31d0f",
+      "question": "Who won the 2018 FIFA World Cup?",
+      "total_ms": 51.5,
+      "n_nodes": 4,
+      "png": "langsmith-q17-refusal.png"
+    },
+    {
+      "tag": "q20-friis-miss",
+      "trace_id": "01a12bcd-d51b-7bc0-a58c-eb401d44e8a4",
+      "question": "What is the formula for the Friis transmission equation?",
+      "total_ms": 42.7,
+      "n_nodes": 4,
+      "png": "langsmith-q20-friis-miss.png"
+    },
+    {
+      "tag": "q22-fm-miss",
+      "trace_id": "01a12bcd-d575-7450-a523-f44d3d3a985e",
+      "question": "How is the bandwidth of an FM signal estimated from its message and deviation?",
+      "total_ms": 48.3,
+      "n_nodes": 4,
+      "png": "langsmith-q22-fm-miss.png"
+    }
+  ],
+  "latency_runs": 22
+}

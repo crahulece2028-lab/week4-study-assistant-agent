@@ -1,0 +1,1275 @@
+{
+  "metrics": {
+    "n_questions": 22,
+    "routing_accuracy": 1.0,
+    "retrieval_hit_rate": 1.0,
+    "answer_keyword_rate": 0.9286,
+    "tool_success_rate": 1.0,
+    "direct_ok_rate": 1.0,
+    "out_of_scope_refusal_rate": 0.6667,
+    "grounded_confidence_rate": 1.0,
+    "latency_ms": {
+      "first_run_warmup": 73.2,
+      "mean": 46.8,
+      "median": 49.7,
+      "p95": 68.4
+    },
+    "langsmith_traced_remotely": true,
+    "llm_mode": "offline",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+  },
+  "rows": [
+    {
+      "id": "q01",
+      "question": "What is the Nyquist rate and why does it matter?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "01_signals_and_systems",
+      "sources": [
+        "01_signals_and_systems",
+        "04_communication_systems"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "nyquist"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The rate 2*f_max is the Nyquist rate, and fs/2 is the Nyquist frequency. If fs is below the Nyquist rate, aliasing occurs and high frequencies appear as spurious low frequencies. Sampling and the Nyquist Theorem The sampling theorem states that a bandlimited signal with maximum frequency f_max can be reconstructed exactly from its samples if the sampling rate fs is greater than 2*f_max. [source: 01_signals_and_systems]",
+      "n_spans": 4,
+      "wall_ms": 73.2,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 1.7
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What is the Nyquist rate and why does it matter?' -> 01_signals_and_systems(0.43), 04_communication_systems(0.34), 01_signals_and_systems(0.33)",
+          "elapsed_ms": 41.9,
+          "hits": [
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.4336
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.3437
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.3266
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.271
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 67%; missing matter)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 422 chars",
+          "elapsed_ms": 0.9
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "question": "What happens if a signal is sampled below the Nyquist rate?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "01_signals_and_systems",
+      "sources": [
+        "01_signals_and_systems",
+        "04_communication_systems",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "alias"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "If fs is below the Nyquist rate, aliasing occurs and high frequencies appear as spurious low frequencies. The rate 2*f_max is the Nyquist rate, and fs/2 is the Nyquist frequency. Sampling and the Nyquist Theorem The sampling theorem states that a bandlimited signal with maximum frequency f_max can be reconstructed exactly from its samples if the sampling rate fs is greater than 2*f_max. [source: 01_signals_and_systems]",
+      "n_spans": 4,
+      "wall_ms": 74.0,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What happens if a signal is sampled below the Nyquist rate?' -> 01_signals_and_systems(0.49), 01_signals_and_systems(0.45), 04_communication_systems(0.30)",
+          "elapsed_ms": 29.6,
+          "hits": [
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.4916
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.4524
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.3005
+            },
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.2429
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 83%; missing happens)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 422 chars",
+          "elapsed_ms": 0.8
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "question": "Explain the region of convergence of the Z-transform.",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "08_digital_signal_processing",
+      "sources": [
+        "01_signals_and_systems",
+        "03_control_systems",
+        "06_transmission_lines",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "region of convergence"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The region of convergence determines uniqueness. The Z-transform X(z) = sum over n of x[n] z^(-n). The Z-transform converts convolution into multiplication: if y[n] = x[n] * h[n] then Y(z) = X(z)H(z), and the transfer function is H(z). [source: 08_digital_signal_processing]",
+      "n_spans": 4,
+      "wall_ms": 72.8,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'Explain the region of convergence of the Z-transform.' -> 08_digital_signal_processing(0.49), 06_transmission_lines(0.31), 03_control_systems(0.30)",
+          "elapsed_ms": 36.9,
+          "hits": [
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.4902
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.3095
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.2983
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.2757
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 100%)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 274 chars",
+          "elapsed_ms": 0.8
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "question": "What sets the frequency resolution of a DFT?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "08_digital_signal_processing",
+      "sources": [
+        "01_signals_and_systems",
+        "04_communication_systems",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "resolution"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The frequency resolution of an N-point DFT is fs/N. The DFT is periodic with period N and relates to the DFT of a signal sampled at fs, where bin k corresponds to frequency k*fs/N. Zero-padding interpolates the spectrum without increasing the true resolution. [source: 08_digital_signal_processing]",
+      "n_spans": 4,
+      "wall_ms": 68.4,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.1
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What sets the frequency resolution of a DFT?' -> 08_digital_signal_processing(0.52), 01_signals_and_systems(0.42), 08_digital_signal_processing(0.37)",
+          "elapsed_ms": 43.1,
+          "hits": [
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.5184
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.4205
+            },
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.3685
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.3186
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 75%; missing sets)",
+          "elapsed_ms": 0.6
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 298 chars",
+          "elapsed_ms": 1.0
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "question": "How do I work out the settling time of a second order system?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "03_control_systems",
+      "sources": [
+        "03_control_systems"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "settling"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The order of the system is the degree of the denominator polynomial. The 2 percent settling time is approximately Ts = 4/(zeta*omega_n). A first-order system is written G(s) = K/(1 + tau*s), where K is the DC gain and tau is the time constant. [source: 03_control_systems]",
+      "n_spans": 4,
+      "wall_ms": 61.8,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'How do I work out the settling time of a second order system' -> 03_control_systems(0.59), 03_control_systems(0.56), 03_control_systems(0.39)",
+          "elapsed_ms": 38.3,
+          "hits": [
+            {
+              "source": "03_control_systems",
+              "score": 0.5868
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.5624
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.3912
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.3222
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 86%; missing work)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 272 chars",
+          "elapsed_ms": 0.9
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "question": "What does the PID control law look like?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "03_control_systems",
+      "sources": [
+        "03_control_systems",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "kp"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "PID Control A PID controller produces u(t) = Kp*e(t) + Ki*integral of e dtau + Kd*de/dt. Control Systems - Lecture Notes 1. The Ziegler-Nichols method tunes gains from the ultimate gain Ku and ultimate period Tu: for a PID controller Kp [source: 03_control_systems]",
+      "n_spans": 4,
+      "wall_ms": 62.7,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What does the PID control law look like?' -> 03_control_systems(0.50), 03_control_systems(0.42), 03_control_systems(0.25)",
+          "elapsed_ms": 35.9,
+          "hits": [
+            {
+              "source": "03_control_systems",
+              "score": 0.4984
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.417
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.2523
+            },
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.2011
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 40%; missing law, like, look)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 265 chars",
+          "elapsed_ms": 0.8
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "question": "How is the reflection coefficient of a mismatched load computed?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "06_transmission_lines",
+      "sources": [
+        "01_signals_and_systems",
+        "03_control_systems",
+        "06_transmission_lines"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "gamma"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The reflection coefficient is Gamma = (ZL - Z0)/(ZL + Z0). A quarter-wave transformer of impedance Z0' = sqrt(Z0*ZL) matches a load to a line. Reflections and Matching When a line is terminated in a load ZL that is not equal to Z0, part of the incident wave reflects. [source: 06_transmission_lines]",
+      "n_spans": 4,
+      "wall_ms": 49.7,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'How is the reflection coefficient of a mismatched load compu' -> 06_transmission_lines(0.44), 06_transmission_lines(0.30), 01_signals_and_systems(0.27)",
+          "elapsed_ms": 28.2,
+          "hits": [
+            {
+              "source": "06_transmission_lines",
+              "score": 0.4441
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.3008
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.2681
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.2291
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 60%; missing computed, mismatched)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 299 chars",
+          "elapsed_ms": 3.1
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "question": "How does a quarter-wave transformer match a transmission line?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "06_transmission_lines",
+      "sources": [
+        "01_signals_and_systems",
+        "06_transmission_lines",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "quarter-wave"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "A quarter-wave transformer of impedance Z0' = sqrt(Z0*ZL) matches a load to a line. Transmission Line Basics A transmission line is characterised by its characteristic impedance Z0 = sqrt(L/C), where L and C are the inductance and capacitance per unit length. Transmission Lines and Electromagnetics - Lecture Notes 1. [source: 06_transmission_lines]",
+      "n_spans": 4,
+      "wall_ms": 44.1,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'How does a quarter-wave transformer match a transmission lin' -> 06_transmission_lines(0.59), 06_transmission_lines(0.53), 08_digital_signal_processing(0.28)",
+          "elapsed_ms": 23.8,
+          "hits": [
+            {
+              "source": "06_transmission_lines",
+              "score": 0.5891
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.5304
+            },
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.2838
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.2751
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 100%)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 350 chars",
+          "elapsed_ms": 0.9
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "question": "How does a Zener diode regulate a voltage?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "05_semiconductor_devices",
+      "sources": [
+        "03_control_systems",
+        "05_semiconductor_devices"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "breakdown"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "A Zener diode operates in reverse breakdown and is used for voltage regulation; an LED is a forward-biased diode that emits light. The diode current is I = Is*(exp(V/(n*Vt)) - 1), where Vt is the thermal voltage, approximately 26 mV at room temperature, and n is the ideality factor (close to 1 for silicon). In an n-channel enhancement MOSFET, conduction begins when the gate-source voltage exceeds the threshold voltage Vth. [source: 05_semiconductor_devices]",
+      "n_spans": 4,
+      "wall_ms": 46.5,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'How does a Zener diode regulate a voltage?' -> 05_semiconductor_devices(0.51), 05_semiconductor_devices(0.29), 05_semiconductor_devices(0.25)",
+          "elapsed_ms": 27.3,
+          "hits": [
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.5072
+            },
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.2921
+            },
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.2497
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.2324
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 75%; missing regulate)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 461 chars",
+          "elapsed_ms": 0.7
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "question": "What is the transconductance of a MOSFET in saturation?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "05_semiconductor_devices",
+      "sources": [
+        "05_semiconductor_devices",
+        "06_transmission_lines"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "gm"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The transconductance is gm = 2*Id/(Vgs - Vth). Field Effect Transistors A MOSFET is a voltage-controlled device. In an n-channel enhancement MOSFET, conduction begins when the gate-source voltage exceeds the threshold voltage Vth. [source: 05_semiconductor_devices]",
+      "n_spans": 4,
+      "wall_ms": 52.0,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What is the transconductance of a MOSFET in saturation?' -> 05_semiconductor_devices(0.60), 05_semiconductor_devices(0.35), 05_semiconductor_devices(0.33)",
+          "elapsed_ms": 32.1,
+          "hits": [
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.5986
+            },
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.3475
+            },
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.3289
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.2677
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 100%)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 265 chars",
+          "elapsed_ms": 0.9
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "question": "What is the modulation index for amplitude modulation?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "04_communication_systems",
+      "sources": [
+        "04_communication_systems",
+        "06_transmission_lines"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "modulation index"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The modulation index is m = Am/Ac, the ratio of message amplitude to carrier amplitude. Amplitude Modulation In Amplitude Modulation (AM) the carrier amplitude varies with the message: s(t) = Ac*(1 + m*cos(2*pi*fm*t))*cos(2*pi*fc*t), where m is the modulation index. The peak frequency deviation is delta_f, and the modulation index is beta = delta_f/fm. [source: 04_communication_systems]",
+      "n_spans": 4,
+      "wall_ms": 61.5,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What is the modulation index for amplitude modulation?' -> 04_communication_systems(0.66), 04_communication_systems(0.52), 04_communication_systems(0.45)",
+          "elapsed_ms": 39.5,
+          "hits": [
+            {
+              "source": "04_communication_systems",
+              "score": 0.6553
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.516
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.4519
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.3121
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 100%)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 389 chars",
+          "elapsed_ms": 0.9
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "question": "calculate 2*pi*50*0.001",
+      "expected_route": "tool",
+      "route": "tool",
+      "route_ok": true,
+      "confidence": "tool",
+      "expected_source": null,
+      "sources": [],
+      "retrieval_hit": null,
+      "keywords": [
+        "0.314"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "Using the calculator: 2*pi*50*0.001 = 0.314159.",
+      "n_spans": 3,
+      "wall_ms": 19.3,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> tool: an arithmetic expression was detected, deferring to the calculator tool rather than the notes",
+          "elapsed_ms": 0.9
+        },
+        {
+          "node": "tool",
+          "detail": "calculator(2*pi*50*0.001) ok=True",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "tool answer, 47 chars",
+          "elapsed_ms": 0.1
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "question": "calculate 3^2 + 4^2",
+      "expected_route": "tool",
+      "route": "tool",
+      "route_ok": true,
+      "confidence": "tool",
+      "expected_source": null,
+      "sources": [],
+      "retrieval_hit": null,
+      "keywords": [
+        "25"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "Using the calculator: 3^2 + 4^2 = 25.",
+      "n_spans": 3,
+      "wall_ms": 20.7,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> tool: an arithmetic expression was detected, deferring to the calculator tool rather than the notes",
+          "elapsed_ms": 0.1
+        },
+        {
+          "node": "tool",
+          "detail": "calculator(3^2 + 4^2) ok=True",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "tool answer, 37 chars",
+          "elapsed_ms": 0.1
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "question": "What is the formula for VSWR?",
+      "expected_route": "tool",
+      "route": "tool",
+      "route_ok": true,
+      "confidence": "tool",
+      "expected_source": null,
+      "sources": [],
+      "retrieval_hit": null,
+      "keywords": [
+        "vswr"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "Standing-wave ratio from reflection coeff: `VSWR = (1 + |Gamma|) / (1 - |Gamma|)` [source: 06_transmission_lines]",
+      "n_spans": 3,
+      "wall_ms": 26.3,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> tool: question asks for a formula or constant (vswr); the formula tool returns the canonical expression",
+          "elapsed_ms": 0.1
+        },
+        {
+          "node": "tool",
+          "detail": "formula_lookup(vswr) ok=True",
+          "elapsed_ms": 0.0
+        },
+        {
+          "node": "generate",
+          "detail": "tool answer, 113 chars",
+          "elapsed_ms": 0.0
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "question": "What is the formula for the Nyquist rate?",
+      "expected_route": "tool",
+      "route": "tool",
+      "route_ok": true,
+      "confidence": "tool",
+      "expected_source": null,
+      "sources": [],
+      "retrieval_hit": null,
+      "keywords": [
+        "2 * f_max"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "Sample above twice the highest frequency or alias: `fs > 2 * f_max` [source: 01_signals_and_systems]",
+      "n_spans": 3,
+      "wall_ms": 14.9,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> tool: question asks for a formula or constant (nyquist); the formula tool returns the canonical expression",
+          "elapsed_ms": 0.1
+        },
+        {
+          "node": "tool",
+          "detail": "formula_lookup(nyquist) ok=True",
+          "elapsed_ms": 0.0
+        },
+        {
+          "node": "generate",
+          "detail": "tool answer, 100 chars",
+          "elapsed_ms": 0.0
+        }
+      ]
+    },
+    {
+      "id": "q16",
+      "question": "hello",
+      "expected_route": "direct",
+      "route": "direct",
+      "route_ok": true,
+      "confidence": "direct",
+      "expected_source": null,
+      "sources": [],
+      "retrieval_hit": null,
+      "keywords": [],
+      "keyword_hit": null,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "I am the Study Assistant for a set of eight ECE lecture-note PDFs (signals, digital electronics, control systems, communications, semiconductors, transmission lines, microprocessors and DSP). Ask me a question about those topics and I will answer from the notes with citations.",
+      "n_spans": 2,
+      "wall_ms": 15.0,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> direct: greeting or meta-question, answered without retrieval",
+          "elapsed_ms": 0.0
+        },
+        {
+          "node": "direct",
+          "detail": "answered without retrieval",
+          "elapsed_ms": 0.0
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "question": "Who won the 2018 FIFA World Cup?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "low",
+      "expected_source": null,
+      "sources": [
+        "03_control_systems",
+        "05_semiconductor_devices",
+        "06_transmission_lines"
+      ],
+      "retrieval_hit": null,
+      "keywords": [],
+      "keyword_hit": null,
+      "in_scope": false,
+      "behaviour_ok": true,
+      "answer": "I could not find this in the provided lecture notes, so I will not guess at an answer.",
+      "n_spans": 4,
+      "wall_ms": 54.5,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'Who won the 2018 FIFA World Cup?' -> 05_semiconductor_devices(0.09), 05_semiconductor_devices(0.07), 06_transmission_lines(0.06)",
+          "elapsed_ms": 24.8,
+          "hits": [
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.0859
+            },
+            {
+              "source": "05_semiconductor_devices",
+              "score": 0.0702
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.0627
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.0511
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=False (question-term coverage 0%; missing 2018, cup, fifa, won, world)",
+          "elapsed_ms": 0.8
+        },
+        {
+          "node": "generate",
+          "detail": "low answer, 86 chars",
+          "elapsed_ms": 0.3
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "question": "What is the capital of France?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "low",
+      "expected_source": null,
+      "sources": [
+        "03_control_systems",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": null,
+      "keywords": [],
+      "keyword_hit": null,
+      "in_scope": false,
+      "behaviour_ok": true,
+      "answer": "I could not find this in the provided lecture notes, so I will not guess at an answer.",
+      "n_spans": 4,
+      "wall_ms": 47.3,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.1
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What is the capital of France?' -> 03_control_systems(0.12), 03_control_systems(0.09), 03_control_systems(0.08)",
+          "elapsed_ms": 26.5,
+          "hits": [
+            {
+              "source": "03_control_systems",
+              "score": 0.1209
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.0857
+            },
+            {
+              "source": "03_control_systems",
+              "score": 0.0848
+            },
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.084
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=False (question-term coverage 0%; missing capital, france)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "low answer, 86 chars",
+          "elapsed_ms": 0.3
+        }
+      ]
+    },
+    {
+      "id": "q19",
+      "question": "Compare the Nyquist rate with Shannon's channel capacity.",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "01_signals_and_systems",
+      "sources": [
+        "01_signals_and_systems",
+        "04_communication_systems"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "nyquist",
+        "shannon"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The rate 2*f_max is the Nyquist rate, and fs/2 is the Nyquist frequency. If fs is below the Nyquist rate, aliasing occurs and high frequencies appear as spurious low frequencies. Sampling and the Nyquist Theorem The sampling theorem states that a bandlimited signal with maximum frequency f_max can be reconstructed exactly from its samples if the sampling rate fs is greater than 2*f_max. [source: 01_signals_and_systems]",
+      "n_spans": 4,
+      "wall_ms": 50.2,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'Compare the Nyquist rate with Shannon's channel capacity.' -> 04_communication_systems(0.61), 04_communication_systems(0.47), 04_communication_systems(0.38)",
+          "elapsed_ms": 27.6,
+          "hits": [
+            {
+              "source": "04_communication_systems",
+              "score": 0.6085
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.4691
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.3806
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.296
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 83%; missing compare)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 422 chars",
+          "elapsed_ms": 0.8
+        }
+      ]
+    },
+    {
+      "id": "q20",
+      "question": "What is the formula for the Friis transmission equation?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": null,
+      "sources": [
+        "01_signals_and_systems",
+        "06_transmission_lines",
+        "08_digital_signal_processing"
+      ],
+      "retrieval_hit": null,
+      "keywords": [],
+      "keyword_hit": null,
+      "in_scope": false,
+      "behaviour_ok": false,
+      "answer": "Transmission Lines and Electromagnetics - Lecture Notes 1. Transmission Line Basics A transmission line is characterised by its characteristic impedance Z0 = sqrt(L/C), where L and C are the inductance and capacitance per unit length. [source: 06_transmission_lines]",
+      "n_spans": 4,
+      "wall_ms": 46.0,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'What is the formula for the Friis transmission equation?' -> 06_transmission_lines(0.45), 06_transmission_lines(0.42), 08_digital_signal_processing(0.33)",
+          "elapsed_ms": 26.5,
+          "hits": [
+            {
+              "source": "06_transmission_lines",
+              "score": 0.4512
+            },
+            {
+              "source": "06_transmission_lines",
+              "score": 0.4203
+            },
+            {
+              "source": "08_digital_signal_processing",
+              "score": 0.3317
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.3162
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 50%; missing formula, friis)",
+          "elapsed_ms": 0.5
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 266 chars",
+          "elapsed_ms": 1.3
+        }
+      ]
+    },
+    {
+      "id": "q21",
+      "question": "How many pins does the 8051 have and what is its machine cycle time?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "07_microprocessors",
+      "sources": [
+        "02_digital_electronics",
+        "07_microprocessors"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "40",
+        "microsecond"
+      ],
+      "keyword_hit": true,
+      "in_scope": true,
+      "behaviour_ok": true,
+      "answer": "The machine cycle of the 8051 is 12 oscillator periods; with a 12 MHz crystal the machine cycle is 1 microsecond. The 8051 uses a Harvard architecture. Microprocessor Architecture A microprocessor executes instructions in a fetch-decode-execute cycle. [source: 07_microprocessors]",
+      "n_spans": 4,
+      "wall_ms": 43.8,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'How many pins does the 8051 have and what is its machine cyc' -> 07_microprocessors(0.68), 07_microprocessors(0.65), 02_digital_electronics(0.30)",
+          "elapsed_ms": 23.9,
+          "hits": [
+            {
+              "source": "07_microprocessors",
+              "score": 0.6836
+            },
+            {
+              "source": "07_microprocessors",
+              "score": 0.6548
+            },
+            {
+              "source": "02_digital_electronics",
+              "score": 0.3044
+            },
+            {
+              "source": "02_digital_electronics",
+              "score": 0.2645
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 83%; missing many)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 280 chars",
+          "elapsed_ms": 1.9
+        }
+      ]
+    },
+    {
+      "id": "q22",
+      "question": "How is the bandwidth of an FM signal estimated from its message and deviation?",
+      "expected_route": "retrieve",
+      "route": "retrieve",
+      "route_ok": true,
+      "confidence": "grounded",
+      "expected_source": "04_communication_systems",
+      "sources": [
+        "01_signals_and_systems",
+        "04_communication_systems"
+      ],
+      "retrieval_hit": true,
+      "keywords": [
+        "carson"
+      ],
+      "keyword_hit": false,
+      "in_scope": true,
+      "behaviour_ok": false,
+      "answer": "The bandwidth of a standard AM signal is twice the message bandwidth, BW = 2*fm. The peak frequency deviation is delta_f, and the modulation index is beta = delta_f/fm. Angle Modulation In Frequency Modulation (FM) the instantaneous frequency deviates with the message. [source: 04_communication_systems]",
+      "n_spans": 4,
+      "wall_ms": 51.4,
+      "trace": [
+        {
+          "node": "router",
+          "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
+          "elapsed_ms": 0.2
+        },
+        {
+          "node": "retrieve",
+          "detail": "k=4 for 'How is the bandwidth of an FM signal estimated from its mess' -> 04_communication_systems(0.64), 04_communication_systems(0.47), 04_communication_systems(0.37)",
+          "elapsed_ms": 32.7,
+          "hits": [
+            {
+              "source": "04_communication_systems",
+              "score": 0.644
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.4741
+            },
+            {
+              "source": "04_communication_systems",
+              "score": 0.3713
+            },
+            {
+              "source": "01_signals_and_systems",
+              "score": 0.2969
+            }
+          ]
+        },
+        {
+          "node": "grade",
+          "detail": "relevant=True (question-term coverage 83%; missing estimated)",
+          "elapsed_ms": 0.4
+        },
+        {
+          "node": "generate",
+          "detail": "grounded answer, 304 chars",
+          "elapsed_ms": 0.9
+        }
+      ]
+    }
+  ]
+}
