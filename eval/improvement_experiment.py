@@ -84,7 +84,7 @@ def experiment_retry() -> dict:
         importlib.reload(graph_mod)          # re-reads the floor from the environment
         graph_mod.answer("warm up", thread_id=f"warm-{floor}")
         spans, lat = [], []
-        last_trace = None
+        runs = []                            # (question, trace) for every OOS question
         refused = 0
         for i, q in enumerate(OOS):
             t0 = time.perf_counter()
@@ -93,13 +93,13 @@ def experiment_retry() -> dict:
             spans.append(len(final["trace"]))
             if any(m in (final.get("answer") or "").lower() for m in REFUSAL):
                 refused += 1
-            last_trace = final["trace"]
+            runs.append((q, final["trace"]))
         return {
             "floor": floor,
             "mean_spans": round(sum(spans) / len(spans), 2),
             "mean_ms": round(sum(lat) / len(lat), 1),
             "refusal_rate": round(refused / len(OOS), 4),
-            "trace": last_trace,
+            "runs": runs,
         }
 
     print("  retry policy:")
@@ -110,9 +110,16 @@ def experiment_retry() -> dict:
 
     os.environ.pop("RAG_LOW_COVER_FLOOR", None)
     importlib.reload(graph_mod)
-    # The floor-off run is the one worth looking at: it contains the rewrite -> retrieve cycle.
-    traced = local_tracer.render(without.pop("trace"), OOS[0], tag="eval-q17-retry-loop")
-    with_floor.pop("trace")
+    # The floor-off run is the one worth looking at: pick the question whose trace actually contains
+    # the rewrite -> retrieve cycle. Not every unanswerable question loops - one with partial lexical
+    # overlap is graded relevant and answers on the first pass - so make no assumption about ordering.
+    loop_q, loop_trace = next(
+        ((q, t) for q, t in without["runs"] if any(s["node"] == "rewrite" for s in t)),
+        (OOS[0], without["runs"][0][1]),
+    )
+    traced = local_tracer.render(loop_trace, loop_q, tag="eval-q17-retry-loop")
+    without.pop("runs")
+    with_floor.pop("runs")
     without.update({"trace_png": traced["png"]})
     return {"with_retry_loop": without, "with_floor": with_floor, "trace_png": traced["png"]}
 

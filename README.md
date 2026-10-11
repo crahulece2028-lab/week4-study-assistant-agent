@@ -10,7 +10,7 @@ evaluation) and 4.4 (demo + report) are all implemented in this one repository.
 
 ```
 round 1  route -> retrieve -> grade -+-> generate (grounded, cited)
-                                     +-> rewrite -> retrieve   (one bounded retry)
+                                     +-> rewrite -> retrieve   (bounded retry, up to 2)
 tool     route -> tool ------> generate
 meta     route -> direct ------> end
 ```

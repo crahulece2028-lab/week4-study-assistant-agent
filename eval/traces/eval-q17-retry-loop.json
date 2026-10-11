@@ -1,52 +1,130 @@
 {
   "question": "Who won the 2018 FIFA World Cup?",
-  "total_ms": 17.8,
+  "total_ms": 71.1,
   "spans": [
     {
       "node": "router",
       "detail": "-> retrieve: in-scope question; answer from the notes via retrieval",
-      "elapsed_ms": 0.1,
+      "elapsed_ms": 0.7,
       "start_ms": 0.0,
-      "end_ms": 0.1
+      "end_ms": 0.7
     },
     {
       "node": "retrieve",
-      "detail": "k=4 for 'What is the formula for the Friis transmission equation?' -> 06_transmission_lines(0.45), 06_transmission_lines(0.42), 08_digital_signal_processing(0.33)",
-      "elapsed_ms": 17.1,
+      "detail": "k=4 for 'Who won the 2018 FIFA World Cup?' -> 05_semiconductor_devices(0.09), 05_semiconductor_devices(0.07), 06_transmission_lines(0.06)",
+      "elapsed_ms": 21.0,
       "hits": [
         {
-          "source": "06_transmission_lines",
-          "score": 0.4512
+          "source": "05_semiconductor_devices",
+          "score": 0.0859
+        },
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.0702
         },
         {
           "source": "06_transmission_lines",
-          "score": 0.4203
+          "score": 0.0627
         },
         {
-          "source": "08_digital_signal_processing",
-          "score": 0.3317
-        },
-        {
-          "source": "01_signals_and_systems",
-          "score": 0.3162
+          "source": "03_control_systems",
+          "score": 0.0511
         }
       ],
-      "start_ms": 0.1,
-      "end_ms": 17.2
+      "start_ms": 0.7,
+      "end_ms": 21.7
     },
     {
       "node": "grade",
-      "detail": "relevant=True (question-term coverage 50%; missing formula, friis)",
-      "elapsed_ms": 0.2,
-      "start_ms": 17.2,
-      "end_ms": 17.4
+      "detail": "relevant=False (question-term coverage 0%; missing 2018, cup, fifa, won, world)",
+      "elapsed_ms": 0.3,
+      "start_ms": 21.7,
+      "end_ms": 22.0
+    },
+    {
+      "node": "rewrite",
+      "detail": "retry 1: 'won 2018 fifa world cup saturation transistor behaves closed'",
+      "elapsed_ms": 0.5,
+      "start_ms": 22.0,
+      "end_ms": 22.5
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'won 2018 fifa world cup saturation transistor behaves closed' -> 05_semiconductor_devices(0.47), 05_semiconductor_devices(0.34), 05_semiconductor_devices(0.24)",
+      "elapsed_ms": 22.5,
+      "hits": [
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.4692
+        },
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.3403
+        },
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.2402
+        },
+        {
+          "source": "02_digital_electronics",
+          "score": 0.1735
+        }
+      ],
+      "start_ms": 22.5,
+      "end_ms": 45.0
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=False (question-term coverage 0%; missing 2018, cup, fifa, won, world)",
+      "elapsed_ms": 0.3,
+      "start_ms": 45.0,
+      "end_ms": 45.3
+    },
+    {
+      "node": "rewrite",
+      "detail": "retry 2: 'won 2018 fifa world cup saturation transistor behaves closed'",
+      "elapsed_ms": 0.4,
+      "start_ms": 45.3,
+      "end_ms": 45.7
+    },
+    {
+      "node": "retrieve",
+      "detail": "k=4 for 'won 2018 fifa world cup saturation transistor behaves closed' -> 05_semiconductor_devices(0.47), 05_semiconductor_devices(0.34), 05_semiconductor_devices(0.24)",
+      "elapsed_ms": 24.9,
+      "hits": [
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.4692
+        },
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.3403
+        },
+        {
+          "source": "05_semiconductor_devices",
+          "score": 0.2402
+        },
+        {
+          "source": "02_digital_electronics",
+          "score": 0.1735
+        }
+      ],
+      "start_ms": 45.7,
+      "end_ms": 70.6
+    },
+    {
+      "node": "grade",
+      "detail": "relevant=False (question-term coverage 0%; missing 2018, cup, fifa, won, world)",
+      "elapsed_ms": 0.3,
+      "start_ms": 70.6,
+      "end_ms": 70.9
     },
     {
       "node": "generate",
-      "detail": "grounded answer, 266 chars",
-      "elapsed_ms": 0.4,
-      "start_ms": 17.4,
-      "end_ms": 17.8
+      "detail": "low answer, 86 chars",
+      "elapsed_ms": 0.2,
+      "start_ms": 70.9,
+      "end_ms": 71.1
     }
   ]
 }
