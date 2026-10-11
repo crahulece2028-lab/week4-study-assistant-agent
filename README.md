@@ -8,6 +8,8 @@ when one is present.
 This is the Week 4 capstone: tasks 4.1 (RAG), 4.2 (multi-step workflow), 4.3 (observability &
 evaluation) and 4.4 (demo + report) are all implemented in this one repository.
 
+**Live demo:** _pending deployment_
+
 ```
 round 1  route -> retrieve -> grade -+-> generate (grounded, cited)
                                      +-> rewrite -> retrieve   (bounded retry, up to 2)

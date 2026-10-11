@@ -27,6 +27,9 @@ ACCENT = colors.HexColor("#1a73e8")
 INK = colors.HexColor("#12151a")
 MUTED = colors.HexColor("#5b6470")
 
+# Set to the deployed app URL after the first cloud build; leave empty to print a placeholder.
+LIVE_DEMO_URL = ""
+
 ss = getSampleStyleSheet()
 TITLE = ParagraphStyle("T", parent=ss["Title"], fontSize=22, leading=26, textColor=INK, spaceAfter=2)
 SUB = ParagraphStyle("S", parent=ss["Normal"], fontSize=11.5, leading=15, textColor=MUTED,
@@ -173,6 +176,7 @@ def build() -> Path:
         "src/app.py is a Streamlit chat UI showing the answer, a confidence badge, the citations, and "
         "an expandable full agent trace and retrieved chunks for every turn, with the live backend "
         "and index stats in the sidebar.", BODY))
+    el.append(Paragraph(f"<b>Live demo:</b> {LIVE_DEMO_URL or 'pending deployment'}", BODY))
 
     el.append(Paragraph("7. Limitations", H1))
     for b in ["Small self-authored corpus and test set; the 100% metrics are ceilings, not estimates.",
