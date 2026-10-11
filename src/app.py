@@ -10,6 +10,7 @@ model and says so in the sidebar instead of failing.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -17,6 +18,24 @@ import streamlit as st
 
 SRC = Path(__file__).resolve().parent
 sys.path.insert(0, str(SRC))
+
+
+def _apply_platform_secrets() -> None:
+    """Mirror Streamlit Cloud / HF Spaces secrets into the environment.
+
+    `config.py` reads plain environment variables, so anything the host keeps in `st.secrets`
+    (where the API keys belong on a deployed app) is copied into `os.environ` before `config` is
+    imported. A silent no-op locally, where keys come from `.env`.
+    """
+    try:
+        for key, value in st.secrets.items():
+            if isinstance(value, str) and value and not os.environ.get(key):
+                os.environ[key] = value
+    except Exception:
+        pass
+
+
+_apply_platform_secrets()
 
 import config  # noqa: E402
 import graph  # noqa: E402
@@ -74,7 +93,7 @@ def sidebar() -> None:
             "1. **router** - notes question, tool call, or small talk?\n"
             "2. **retrieve** - top-k chunks from FAISS (cosine).\n"
             "3. **grade** - does the context actually answer the question?\n"
-            "4. **rewrite -> retrieve** - one bounded retry if it does not.\n"
+            "4. **rewrite -> retrieve** - up to two bounded retries if it does not.\n"
             "5. **generate** - answer grounded in the retrieved chunks.")
 
     with st.sidebar.expander("Example questions"):
@@ -110,8 +129,14 @@ def main() -> None:
     sidebar()
 
     if not (config.INDEX / "faiss_store.bin").exists():
-        st.error("No index found. Build it first: `python src/ingest.py`")
-        return
+        with st.spinner("First run: building the FAISS index from the bundled notes..."):
+            try:
+                import ingest
+                ingest.build(config.CHUNK_SIZE, config.CHUNK_OVERLAP)
+                _ingest_stats.clear()
+            except Exception as exc:  # pragma: no cover - first-run convenience only
+                st.error(f"Could not build the index: {exc}\n\nRun `python src/ingest.py`.")
+                return
 
     if "history" not in st.session_state:
         st.session_state.history = []

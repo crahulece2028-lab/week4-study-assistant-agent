@@ -50,6 +50,13 @@
            padding: .6rem 8vw; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #cfd6de; margin: 0 3px; }
   .dot.on { background: var(--accent); }
+  @media print {
+    .deck { height: auto; display: block; }
+    .slide { display: block !important; animation: none; min-height: 92vh;
+             page-break-after: always; break-after: page; }
+    .slide:last-of-type { page-break-after: auto; break-after: auto; }
+    footer, #dots { display: none !important; }
+  }
 </style>
 </head>
 <body>
