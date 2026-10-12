@@ -180,6 +180,8 @@ def build() -> Path:
                       ("langsmith-q12-tool", "tool path from the live LangSmith trace"),
                       ("langsmith-q20-friis-miss", "the q20 Friis failure, from LangSmith"),
                       ("langsmith-latency", "per-question trace latency (LangSmith)"),
+                      ("ui-langsmith-run", "the same run, from the LangSmith web UI"),
+                      ("ui-langsmith-run-2", "the same run, from the LangSmith web UI (second view)"),
                       ("eval-q17-retry-loop", "retry loop (floor off) on an unanswerable question")]:
         p = DOCS / "traces" / f"{name}.png"
         if p.exists():
