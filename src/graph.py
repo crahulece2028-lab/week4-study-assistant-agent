@@ -214,11 +214,24 @@ def get_graph():
     return _GRAPH
 
 
-def answer(question: str, thread_id: str = "default") -> AgentState:
-    """Run one question through the graph and return the final state."""
+def answer(question: str, thread_id: str = "default", tags: list[str] | None = None,
+           metadata: dict | None = None, run_name: str | None = None) -> AgentState:
+    """Run one question through the graph and return the final state.
+
+    `tags`/`metadata`/`run_name` are forwarded to the LangGraph invoke config, so when LangSmith
+    tracing is on every question becomes a filterable run tagged with the project and the active
+    configuration ("offline" or "llm") and carrying its question id.
+    """
     graph = get_graph()
     init: AgentState = {"question": question, "query": question, "retry_count": 0, "trace": []}
-    return graph.invoke(init, config={"configurable": {"thread_id": thread_id}})
+    cfg: dict = {"configurable": {"thread_id": thread_id}}
+    if tags:
+        cfg["tags"] = list(tags)
+    if metadata:
+        cfg["metadata"] = dict(metadata)
+    if run_name:
+        cfg["run_name"] = run_name
+    return graph.invoke(init, config=cfg)
 
 
 def mermaid() -> str:

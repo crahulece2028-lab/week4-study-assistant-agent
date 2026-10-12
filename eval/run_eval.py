@@ -27,7 +27,14 @@ import config
 
 TRACED_REMOTELY = config.enable_langsmith()
 
+# The configuration name ("offline" or "llm") is both the LangSmith run tag and the output-file
+# suffix, so the two halves of the comparison can never drift apart.
+RUN_TAG = "offline" if config.llm_mode() == "offline" else "llm"
+RUN_MODEL = (config.GROQ_MODEL if config.llm_mode() == "groq"
+             else config.GOOGLE_MODEL if config.llm_mode() == "gemini" else "offline-extractive")
+
 import graph  # noqa: E402
+import llm as llm_mod  # noqa: E402
 import local_tracer  # noqa: E402
 
 REFUSAL_MARKERS = ("could not find", "not find this", "will not guess", "don't know",
@@ -54,7 +61,7 @@ def load_testset() -> dict:
     return json.loads((HERE / "testset.json").read_text(encoding="utf-8"))
 
 
-def evaluate(suffix: str = "") -> dict:
+def evaluate(tag: str, suffix: str = "", pace: float = 0.0) -> dict:
     testset = load_testset()
     # Warm up once so the reported latency is steady-state, not model-load. The cost is real and
     # is reported separately as `first_run_warmup`.
@@ -62,15 +69,30 @@ def evaluate(suffix: str = "") -> dict:
     rows = []
     wall = []
     for i, q in enumerate(testset["questions"]):
+        if pace and i:
+            time.sleep(pace)  # stay under the free-tier tokens-per-minute cap
+        llm_mod.reset_model_timing()
         t0 = time.perf_counter()
-        final = graph.answer(q["question"], thread_id=f"eval-{q['id']}")
+        final = graph.answer(
+            q["question"], thread_id=f"eval-{q['id']}",
+            tags=[config.LANGSMITH_PROJECT, tag],
+            metadata={"config": tag, "question_id": q["id"], "model": RUN_MODEL},
+            run_name=f"eval-{q['id']}",
+        )
         elapsed = (time.perf_counter() - t0) * 1000
+        model_elapsed = llm_mod.model_ms()
         wall.append(elapsed)
 
         answer = final.get("answer", "") or ""
         sources = final.get("sources", []) or []
         low = normalise(answer).lower()
         route_ok = final.get("route") == q["route"]
+
+        # Per-node latency (summed across retries, so a repeated node reports its total) and the
+        # total. `wall_ms` is measured outside the graph so it includes invoke overhead too.
+        node_ms: dict[str, float] = {}
+        for s in final.get("trace", []):
+            node_ms[s["node"]] = round(node_ms.get(s["node"], 0.0) + s.get("elapsed_ms", 0.0), 1)
 
         if q.get("in_scope", True) is False:
             behaviour_ok = any(m in low for m in REFUSAL_MARKERS)
@@ -105,11 +127,22 @@ def evaluate(suffix: str = "") -> dict:
             "behaviour_ok": behaviour_ok,
             "answer": answer,
             "n_spans": len(final.get("trace", [])),
+            "node_ms": node_ms,
+            "model_ms": round(model_elapsed, 1),
             "wall_ms": round(elapsed, 1),
             "trace": final.get("trace", []),
         })
 
     steady = wall[1:] if len(wall) > 1 else wall
+
+    # Model time excludes rate-limit backoff, so it is the honest per-query model latency on the
+    # free tier; the wall latency above is what a user actually waits.
+    model_vals = [r["model_ms"] for r in rows if r["model_ms"] > 0]
+    model_lat = ({
+        "mean": round(stats.mean(model_vals), 1),
+        "median": round(stats.median(model_vals), 1),
+        "p95": round(sorted(model_vals)[max(0, int(0.95 * len(model_vals)) - 1)], 1),
+    } if model_vals else None)
 
     def rate(sel, field):
         vals = [r[field] for r in rows if sel(r) and r.get(field) is not None]
@@ -135,6 +168,10 @@ def evaluate(suffix: str = "") -> dict:
             "p95": round(sorted(steady)[max(0, int(0.95 * len(steady)) - 1)], 1),
         },
         "langsmith_traced_remotely": TRACED_REMOTELY,
+        "langsmith_project": config.LANGSMITH_PROJECT if TRACED_REMOTELY else None,
+        "model_latency_ms": model_lat,
+        "config": tag,
+        "model": RUN_MODEL,
         "llm_mode": config.llm_mode(),
         "embedding_model": config.EMBED_MODEL,
     }
@@ -152,6 +189,14 @@ def evaluate(suffix: str = "") -> dict:
                         r["n_spans"], r["wall_ms"], r["question"]])
 
     (HERE / f"summary{suffix}.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+
+    # Keep the offline config readable under its bare name too, so downstream tooling and the
+    # report builder always find the baseline at results.json / summary.json.
+    if tag == "offline":
+        for src, dst in ((f"results{suffix}.json", "results.json"),
+                         (f"results{suffix}.csv", "results.csv"),
+                         (f"summary{suffix}.json", "summary.json")):
+            (HERE / dst).write_text((HERE / src).read_text(encoding="utf-8"), encoding="utf-8")
     return {"metrics": metrics, "rows": rows}
 
 
@@ -172,12 +217,20 @@ def render_representative_traces(rows: list[dict], suffix: str = "") -> list[dic
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the 4.3 evaluation set.")
-    parser.add_argument("--suffix", default="",
-                        help="suffix for output files, e.g. '_llm' -> summary_llm.json")
+    parser.add_argument("--suffix", default=None,
+                        help="suffix for output files; defaults to the config name, so a run "
+                             "writes results_offline.json or results_llm.json.")
+    parser.add_argument("--pace", type=float, default=0.0,
+                        help="seconds to sleep between questions (use ~40 to stay under a free-tier "
+                             "tokens-per-minute cap and get clean latency numbers).")
     args = parser.parse_args()
-    result = evaluate(args.suffix)
-    traces = render_representative_traces(result["rows"], args.suffix)
+    suffix = args.suffix if args.suffix is not None else f"_{RUN_TAG}"
+    result = evaluate(RUN_TAG, suffix, pace=args.pace)
+    # The default offline run keeps the bare trace names downstream docs reference.
+    local_suffix = "" if RUN_TAG == "offline" and suffix == "_offline" else suffix
+    traces = render_representative_traces(result["rows"], local_suffix)
     m = result["metrics"]
+    print(f"config              {m['config']}  (model {m['model']})")
     print(f"questions           {m['n_questions']}")
     print(f"routing accuracy    {m['routing_accuracy']:.0%}")
     print(f"retrieval hit rate  {m['retrieval_hit_rate']:.0%}")
@@ -185,8 +238,12 @@ def main() -> None:
     print(f"tool success        {m['tool_success_rate']:.0%}")
     print(f"OOS refusal rate    {m['out_of_scope_refusal_rate']:.0%}")
     print(f"latency (median)    {m['latency_ms']['median']} ms  "
-          f"(first run {m['latency_ms']['first_run_warmup']} ms, warm)")
-    print(f"langsmith remote    {m['langsmith_traced_remotely']}  (llm: {m['llm_mode']})")
+          f"(p95 {m['latency_ms']['p95']} ms, first run {m['latency_ms']['first_run_warmup']} ms)")
+    if m.get("model_latency_ms"):
+        ml = m["model_latency_ms"]
+        print(f"model latency       median {ml['median']} ms  (p95 {ml['p95']} ms, excludes backoff)")
+    print(f"langsmith remote    {m['langsmith_traced_remotely']}  "
+          f"(project {m['langsmith_project']}, llm: {m['llm_mode']})")
     print("traces:")
     for t in traces:
         print(f"  {t['name']:24s} {t['total_ms']:8.1f} ms -> {t['png']}")

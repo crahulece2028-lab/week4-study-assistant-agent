@@ -41,6 +41,19 @@ CALC_WORDS = {"calculate", "compute", "evaluate", "solve", "sum", "product", "di
               "subtract", "multiply", "times", "plus", "minus", "squared", "sqrt", "root"}
 FORMULA_WORDS = {"formula", "equation", "expression"}
 
+# Wall-clock time actually spent inside model calls, excluding any rate-limit backoff. The free
+# tier's tokens-per-minute cap (8k/min on gpt-oss-20b) forces a batch run to sleep between calls;
+# without this counter the reported latency would measure the throttle, not the model.
+_MODEL_MS = {"total": 0.0}
+
+
+def reset_model_timing() -> None:
+    _MODEL_MS["total"] = 0.0
+
+
+def model_ms() -> float:
+    return round(_MODEL_MS["total"], 1)
+
 
 def content_words(text: str) -> list[str]:
     toks = WORD_RE.findall(text.lower())
@@ -303,8 +316,32 @@ class ChatAgentLLM:
 
     def _ask(self, system: str, user: str) -> str:
         from langchain_core.messages import HumanMessage, SystemMessage
-        resp = self.model.invoke([SystemMessage(content=system), HumanMessage(content=user)])
-        return getattr(resp, "content", str(resp)).strip()
+        import time
+        msgs = [SystemMessage(content=system), HumanMessage(content=user)]
+        last: Exception | None = None
+        # The free tier enforces a tokens-per-minute cap (8k/min on gpt-oss-20b), so a batch run
+        # will trip it; transient connection drops also happen under load. Back off and retry
+        # rather than bubbling the error up to the caller.
+        for attempt in range(10):
+            try:
+                t0 = time.perf_counter()
+                resp = self.model.invoke(msgs)
+                _MODEL_MS["total"] += (time.perf_counter() - t0) * 1000.0
+                return getattr(resp, "content", str(resp)).strip()
+            except Exception as exc:  # noqa: BLE001
+                last = exc
+                low = str(exc).lower()
+                name = type(exc).__name__.lower()
+                retryable = ("429" in low or "rate limit" in low or "rate_limit" in low
+                             or "connection" in low or "timeout" in low or "disconnect" in low
+                             or "connection" in name or "timeout" in name)
+                if "per day" in low or "tpd" in low:
+                    retryable = False  # a daily cap will not clear while we sleep
+                if retryable:
+                    time.sleep(min(2 ** attempt + 3, 40))
+                    continue
+                raise
+        raise last  # type: ignore[misc]
 
     def route(self, question: str) -> Route:
         out = self._ask(ROUTE_SYS, question)
@@ -361,7 +398,7 @@ def get_llm() -> AgentLLM:
     if mode == "groq":
         from langchain_groq import ChatGroq
         return ChatAgentLLM(ChatGroq(model=config.GROQ_MODEL, temperature=0,
-                                     api_key=config.GROQ_API_KEY))
+                                     api_key=config.GROQ_API_KEY, max_retries=0))
     if mode == "gemini":
         from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatAgentLLM(ChatGoogleGenerativeAI(model=config.GOOGLE_MODEL, temperature=0,
