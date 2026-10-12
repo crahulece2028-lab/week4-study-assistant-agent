@@ -131,11 +131,13 @@ def build() -> Path:
     llat = hosted.get("latency_ms", {})
     el.append(Paragraph(
         f"{summary.get('n_questions')}-question labelled set, run twice. <b>Offline</b> (no key): "
-        f"latency median {lat.get('median')} ms, p95 {lat.get('p95')} ms. <b>Hosted</b> (Groq "
-        f"openai/gpt-oss-120b): median {llat.get('median')} ms. Every run is sent to the "
-        f"week4-study-assistant LangSmith project; docs/langsmith_figures.py renders the live trees "
-        f"to docs/traces/langsmith-*.png.", BODY))
-    mrows = [["Metric", "offline", "Groq"],
+        f"latency median {lat.get('median')} ms, p95 {lat.get('p95')} ms. <b>LLM</b> (Groq "
+        f"{hosted.get('model','?')}): median {llat.get('median')} ms"
+        f"{', model time median ' + str(hosted.get('model_latency_ms', {}).get('median')) + ' ms' if hosted.get('model_latency_ms') else ''}. "
+        f"Both runs are tagged and sent to the week4-study-assistant LangSmith project (22 trees each), "
+        f"and replayed through the week4-study-assistant-eval dataset + evaluators; "
+        f"docs/langsmith_figures.py renders the live trees to docs/traces/langsmith-*.png.", BODY))
+    mrows = [["Metric", "offline", "LLM (Groq)"],
              ["routing accuracy", f"{summary.get('routing_accuracy', 0):.0%}",
               f"{hosted.get('routing_accuracy', 0):.0%}"],
              ["retrieval hit rate", f"{summary.get('retrieval_hit_rate', 0):.0%}",
@@ -193,8 +195,10 @@ def build() -> Path:
     for b in ["Small self-authored corpus and test set; the 100% metrics are ceilings, not estimates.",
               "A lexical relevance grader - the direct cause of the headline failure (q20).",
               "Extractive default answering; the Groq generative baseline (4.3) matches the offline "
-              "metrics on this set and is ~675x slower.",
-              "Single-run measurements; no variance study."]:
+              "routing/retrieval and fixes the two weak metrics (refusal 67->100%, keyword 93->100%) "
+              "at a median ~4.4 s vs 56 ms.",
+              "Single-run measurements; the hosted router/grader vary slightly run to run (q10), and "
+              "the measured pass used gpt-oss-20b rather than the configured gpt-oss-120b."]:
         el.append(Paragraph(b, BULLET, bulletText="\u2022"))
 
     el.append(Paragraph("8. Reproduce", H1))

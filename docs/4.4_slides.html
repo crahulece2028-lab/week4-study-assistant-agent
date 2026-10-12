@@ -119,15 +119,15 @@
   <section class="slide">
     <h2><span class="n">4.3</span>Evaluation - 22 labelled questions</h2>
     <table>
-      <tr><th>Metric</th><th class="num">Value</th></tr>
-      <tr><td>routing accuracy</td><td class="num ok">100%</td></tr>
-      <tr><td>retrieval hit rate</td><td class="num ok">100%</td></tr>
-      <tr><td>answer keyword rate</td><td class="num warn">93%</td></tr>
-      <tr><td>tool success rate</td><td class="num ok">100%</td></tr>
-      <tr><td>out-of-scope refusal rate</td><td class="num warn">67%</td></tr>
-      <tr><td>latency (median)</td><td class="num">26 ms</td></tr>
+      <tr><th>Metric</th><th class="num">offline</th><th class="num">LLM (Groq)</th></tr>
+      <tr><td>routing accuracy</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
+      <tr><td>retrieval hit rate</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
+      <tr><td>answer keyword rate</td><td class="num warn">93%</td><td class="num ok">100%</td></tr>
+      <tr><td>tool success rate</td><td class="num ok">100%</td><td class="num ok">100%</td></tr>
+      <tr><td>out-of-scope refusal</td><td class="num warn">67%</td><td class="num ok">100%</td></tr>
+      <tr><td>latency (median)</td><td class="num">56 ms</td><td class="num">4.4 s</td></tr>
     </table>
-    <p class="muted" style="margin-top:.8rem">The three 100%s are a ceiling from a small, self-authored set - the two that are not perfect are the informative ones.</p>
+    <p class="muted" style="margin-top:.8rem">The 100%s are a ceiling from a small, self-authored set; the hosted LLM fixes the two weak (informative) metrics. Both runs are traced in LangSmith and replayed through the <code>week4-study-assistant-eval</code> dataset with evaluators.</p>
   </section>
 
   <section class="slide">
@@ -166,9 +166,8 @@
 
   <section class="slide">
     <h2><span class="n">4.3</span>Traces</h2>
-    <p>Every node records a span; <code>eval/local_tracer.py</code> renders it to a waterfall - the local
-    stand-in for the LangSmith run view. With <code>LANGSMITH_API_KEY</code> set, the same runs go to LangSmith.</p>
-    <p class="muted">Grounded &middot; tool-only &middot; refusal &middot; and a retry loop (floor off) in <code>docs/traces/</code>.</p>
+    <p>Every node records a span. The offline run renders a local waterfall (<code>eval/local_tracer.py</code>); both configurations also stream 22 tagged trees to <strong>LangSmith</strong>, and <code>docs/langsmith_figures.py</code> pulls the real waterfalls back from the API.</p>
+    <p class="muted">Grounded &middot; tool-only &middot; refusal &middot; corrective-retry loop &middot; plus an offline-vs-LLM dataset experiment with custom evaluators.</p>
   </section>
 
   <section class="slide">
@@ -184,8 +183,8 @@
   <section class="slide">
     <h2><span class="n">05</span>Limitations &amp; next</h2>
     <ul>
-      <li>Small self-authored corpus/test set; lexical grader; extractive default answers; single-run numbers.</li>
-      <li><strong>Next:</strong> generative grader (fix q20) &rarr; cross-encoder reranker (fix q22) &rarr; bigger corpus &rarr; web-search tool.</li>
+      <li>Small self-authored corpus/test set; lexical grader; extractive default answers; single-run numbers; the hosted pass used <code>gpt-oss-20b</code> not the configured <code>gpt-oss-120b</code>.</li>
+      <li><strong>Next:</strong> traced <code>gpt-oss-120b</code> pass &rarr; cross-encoder reranker (q22) &rarr; bigger corpus &rarr; web-search tool.</li>
     </ul>
     <p class="muted">Everything runs with no API key; set <code>GROQ_API_KEY</code> / <code>LANGSMITH_API_KEY</code> to upgrade.</p>
   </section>

@@ -7,14 +7,22 @@
     "tool_success_rate": 1.0,
     "direct_ok_rate": 1.0,
     "out_of_scope_refusal_rate": 1.0,
-    "grounded_confidence_rate": 0.9286,
+    "grounded_confidence_rate": 1.0,
     "latency_ms": {
-      "first_run_warmup": 2791.8,
-      "mean": 14030.6,
-      "median": 17620.1,
-      "p95": 21195.2
+      "first_run_warmup": 2668.4,
+      "mean": 7221.1,
+      "median": 4405.1,
+      "p95": 11531.9
     },
-    "langsmith_traced_remotely": false,
+    "langsmith_traced_remotely": true,
+    "langsmith_project": "week4-study-assistant",
+    "model_latency_ms": {
+      "mean": 5640.2,
+      "median": 3377.8,
+      "p95": 9728.7
+    },
+    "config": "llm",
+    "model": "openai/gpt-oss-20b",
     "llm_mode": "groq",
     "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
   },
@@ -38,19 +46,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The Nyquist rate is the minimum sampling frequency required to capture a band\u2011limited signal without loss; it equals twice the signal\u2019s highest frequency (\u202f2\u202ff_max\u202f)\u202f[01_signals_and_systems]. Sampling at or above this rate (so that the Nyquist frequency\u202ffs/2\u202fcovers all signal content) prevents aliasing\u2014otherwise high\u2011frequency components fold into spurious low frequencies and the original signal cannot be perfectly reconstructed.",
+      "answer": "The Nyquist rate is twice the maximum frequency present in a band\u2011limited signal (fs\u202f>\u202f2\u202ff_max). It is the minimum sampling rate that guarantees the signal can be perfectly reconstructed from its samples. Sampling below this rate causes aliasing, where high\u2011frequency components masquerade as lower frequencies, corrupting the signal. (Source: [01_signals_and_systems])",
       "n_spans": 4,
-      "wall_ms": 2791.8,
+      "node_ms": {
+        "router": 762.9,
+        "retrieve": 40.4,
+        "grade": 902.8,
+        "generate": 939.3
+      },
+      "model_ms": 2603.9,
+      "wall_ms": 2668.4,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The question asks for an explanation of a concept, not a direct calculation or formula request.",
-          "elapsed_ms": 836.0
+          "detail": "-> retrieve: Substantive question about Nyquist rate.",
+          "elapsed_ms": 762.9
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What is the Nyquist rate and why does it matter?' -> 01_signals_and_systems(0.43), 04_communication_systems(0.34), 01_signals_and_systems(0.33)",
-          "elapsed_ms": 80.4,
+          "elapsed_ms": 40.4,
           "hits": [
             {
               "source": "01_signals_and_systems",
@@ -72,13 +87,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage defines Nyquist rate (2*f_max) and explains its importance for avoiding aliasing in sampling.)",
-          "elapsed_ms": 898.3
+          "detail": "relevant=True (Passage defines Nyquist rate and explains aliasing.)",
+          "elapsed_ms": 902.8
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 433 chars",
-          "elapsed_ms": 956.7
+          "detail": "grounded answer, 369 chars",
+          "elapsed_ms": 939.3
         }
       ]
     },
@@ -102,19 +117,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "If the sampling frequency\u202ffs\u202fis below the Nyquist rate (i.e.,\u202ffs\u202f<\u202f2\u202ffmax), aliasing occurs: the signal\u2019s high\u2011frequency components are folded into lower frequencies, appearing as spurious low\u2011frequency components.\u202f\u301001_signals_and_systems\u3011",
+      "answer": "If a signal is sampled below the Nyquist rate, aliasing occurs: components above the Nyquist frequency (fs/2) are folded back and appear as spurious low\u2011frequency components in the sampled data. This distortion makes the original signal unrecoverable without additional filtering. (Source: [01_signals_and_systems])",
       "n_spans": 4,
-      "wall_ms": 2629.4,
+      "node_ms": {
+        "router": 1426.8,
+        "retrieve": 39.8,
+        "grade": 895.3,
+        "generate": 1059.4
+      },
+      "model_ms": 3380.3,
+      "wall_ms": 3445.4,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Substantive question about sampling theory, not a bare calculation or explicit formula request.",
-          "elapsed_ms": 761.4
+          "detail": "-> retrieve: Substantive question about sampling below Nyquist rate.",
+          "elapsed_ms": 1426.8
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What happens if a signal is sampled below the Nyquist rate?' -> 01_signals_and_systems(0.49), 01_signals_and_systems(0.45), 04_communication_systems(0.30)",
-          "elapsed_ms": 91.3,
+          "elapsed_ms": 39.8,
           "hits": [
             {
               "source": "01_signals_and_systems",
@@ -137,12 +159,12 @@
         {
           "node": "grade",
           "detail": "relevant=True (Passage explicitly states that sampling below the Nyquist rate causes aliasing, with high frequencies appearing as spurious low frequencies.)",
-          "elapsed_ms": 851.8
+          "elapsed_ms": 895.3
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 239 chars",
-          "elapsed_ms": 795.9
+          "detail": "grounded answer, 315 chars",
+          "elapsed_ms": 1059.4
         }
       ]
     },
@@ -152,7 +174,7 @@
       "expected_route": "retrieve",
       "route": "retrieve",
       "route_ok": true,
-      "confidence": "low",
+      "confidence": "grounded",
       "expected_source": "08_digital_signal_processing",
       "sources": [
         "01_signals_and_systems",
@@ -167,19 +189,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The region of convergence (ROC) is the set of complex\u202fz\u2011values for which the Z\u2011transform sum\u202f\\(X(z)=\\sum_n x[n]z^{-n}\\) converges, and it uniquely determines the transform\u202f[08_digital_signal_processing]. For a causal, stable system the ROC must include the unit circle (|z|\u202f=\u202f1) because all poles of\u202f\\(H(z)\\) lie inside that circle, ensuring convergence on the unit\u2011circle frequency axis.",
+      "answer": "The region of convergence (ROC) is the set of complex \\(z\\) values for which the Z\u2011transform sum \\(X(z)=\\sum_{n}x[n]z^{-n}\\) converges. It determines the uniqueness of the transform: a given \\(x[n]\\) has a unique \\(X(z)\\) only if the ROC is specified. For a causal (right\u2011sided) impulse response, the ROC is the exterior of the outermost pole, and stability requires that all poles lie inside the unit circle \\(|z|=1\\).  \nSource: [08_digital_signal_processing] Digital Signal Processing \u2013 Lecture Notes.",
       "n_spans": 4,
-      "wall_ms": 4676.6,
+      "node_ms": {
+        "router": 912.7,
+        "retrieve": 52.5,
+        "grade": 936.8,
+        "generate": 1170.5
+      },
+      "model_ms": 3018.8,
+      "wall_ms": 3098.8,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The question asks for an explanatory concept about Z-transform ROC, requiring retrieval from lecture notes.",
-          "elapsed_ms": 756.0
+          "detail": "-> retrieve: Substantive question about Z-transform ROC.",
+          "elapsed_ms": 912.7
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'Explain the region of convergence of the Z-transform.' -> 08_digital_signal_processing(0.49), 06_transmission_lines(0.31), 03_control_systems(0.30)",
-          "elapsed_ms": 43.5,
+          "elapsed_ms": 52.5,
           "hits": [
             {
               "source": "08_digital_signal_processing",
@@ -201,13 +230,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=False (Passage only mentions ROC in passing without explaining its definition, properties, or how it is determined.)",
-          "elapsed_ms": 1428.9
+          "detail": "relevant=True (Passage 08_digital_signal_processing discusses the Z-transform and explicitly mentions that the region of convergence determines uniqueness, and provides contex)",
+          "elapsed_ms": 936.8
         },
         {
           "node": "generate",
-          "detail": "low answer, 388 chars",
-          "elapsed_ms": 2433.6
+          "detail": "grounded answer, 503 chars",
+          "elapsed_ms": 1170.5
         }
       ]
     },
@@ -231,19 +260,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The frequency resolution of a DFT is determined by the sampling rate divided by the number of DFT points:\u202fresolution\u202f=\u202ffs\u202f\u2044\u202fN. In other words, the spacing between adjacent frequency bins (k\u00b7fs/N) sets how finely the spectrum can be resolved. \u301008_digital_signal_processing\u3011",
+      "answer": "The frequency resolution of an N\u2011point DFT is set by the sampling frequency divided by the number of points:  \n\n\\[\n\\Delta f = \\frac{f_s}{N}.\n\\]\n\nZero\u2011padding can interpolate the spectrum but does not increase this true resolution. (Source: [08_digital_signal_processing])",
       "n_spans": 4,
-      "wall_ms": 23269.2,
+      "node_ms": {
+        "router": 1600.7,
+        "retrieve": 38.6,
+        "grade": 722.6,
+        "generate": 651.8
+      },
+      "model_ms": 2974.0,
+      "wall_ms": 3042.7,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Substantive DSP question requiring information from lecture notes.",
-          "elapsed_ms": 7864.1
+          "detail": "-> retrieve: Substantive question about DFT frequency resolution.",
+          "elapsed_ms": 1600.7
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What sets the frequency resolution of a DFT?' -> 08_digital_signal_processing(0.52), 01_signals_and_systems(0.42), 08_digital_signal_processing(0.37)",
-          "elapsed_ms": 42.1,
+          "elapsed_ms": 38.6,
           "hits": [
             {
               "source": "08_digital_signal_processing",
@@ -265,13 +301,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage explicitly states that the DFT frequency resolution is set by fs/N, directly answering the question.)",
-          "elapsed_ms": 6135.8
+          "detail": "relevant=True (Passage explicitly states that the frequency resolution of an N\u2011point DFT is fs/N.)",
+          "elapsed_ms": 722.6
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 272 chars",
-          "elapsed_ms": 9215.5
+          "detail": "grounded answer, 271 chars",
+          "elapsed_ms": 651.8
         }
       ]
     },
@@ -293,19 +329,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The 2\u202f% settling time of a standard second\u2011order system is obtained from its damping ratio\u202f\u03b6 and natural frequency\u202f\u03c9\u2099 using  \n\n\\[\nT_s \\;\\approx\\; \\frac{4}{\\zeta\\,\\omega_n}.\n\\]\n\nThus, once \u03b6 and \u03c9\u2099 are known, divide 4 by their product to get the approximate settling time. (Source:\u202f[03_control_systems]\u202f2.\u202fSecond\u2011Order Systems)",
+      "answer": "The 2\u202f% settling time of a standard second\u2011order system can be estimated with  \n\n\\[\nT_s \\approx \\frac{4}{\\zeta\\,\\omega_n},\n\\]\n\nwhere \\(\\zeta\\) is the damping ratio and \\(\\omega_n\\) is the natural frequency.  \n(Source: [03_control_systems] 2. Second\u2011Order Systems)",
       "n_spans": 4,
-      "wall_ms": 19445.0,
+      "node_ms": {
+        "router": 7812.4,
+        "retrieve": 47.0,
+        "grade": 791.3,
+        "generate": 724.5
+      },
+      "model_ms": 9327.0,
+      "wall_ms": 9399.5,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Substantive question about control systems requiring note retrieval.",
-          "elapsed_ms": 4308.1
+          "detail": "-> retrieve: Substantive question about control systems.",
+          "elapsed_ms": 7812.4
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'How do I work out the settling time of a second order system' -> 03_control_systems(0.59), 03_control_systems(0.56), 03_control_systems(0.39)",
-          "elapsed_ms": 43.2,
+          "elapsed_ms": 47.0,
           "hits": [
             {
               "source": "03_control_systems",
@@ -327,13 +370,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage provides the formula Ts = 4/(\u03b6\u00b7\u03c9_n) for 2% settling time of a second-order system.)",
-          "elapsed_ms": 7219.3
+          "detail": "relevant=True (Passages provide the 2% settling time formula Ts = 4/(\u03b6\u00b7\u03c9_n) for a second\u2011order system.)",
+          "elapsed_ms": 791.3
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 326 chars",
-          "elapsed_ms": 7862.7
+          "detail": "grounded answer, 263 chars",
+          "elapsed_ms": 724.5
         }
       ]
     },
@@ -356,19 +399,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The PID control law is expressed as  \n\n\\[\nu(t)=K_{p}\\,e(t)+K_{i}\\int e(\\tau)\\,d\\tau+K_{d}\\,\\frac{de(t)}{dt},\n\\]\n\nwhere \\(e(t)\\) is the error, \\(K_{p}\\) the proportional gain, \\(K_{i}\\) the integral gain, and \\(K_{d}\\) the derivative gain. \u301003_control_systems\u3011",
+      "answer": "The PID control law is expressed as  \n\n\\[\nu(t)=K_p\\,e(t)+K_i\\int e(\\tau)\\,d\\tau+K_d\\,\\frac{de(t)}{dt},\n\\]\n\nwhere \\(e(t)\\) is the error signal.  \nThis law combines proportional, integral, and derivative actions to shape the system response.  \nSource: [03_control_systems].",
       "n_spans": 4,
-      "wall_ms": 17620.1,
+      "node_ms": {
+        "router": 7964.5,
+        "retrieve": 38.1,
+        "grade": 814.5,
+        "generate": 951.5
+      },
+      "model_ms": 9728.7,
+      "wall_ms": 9795.7,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Substantive question about control systems requiring note citation.",
-          "elapsed_ms": 8427.5
+          "detail": "-> retrieve: Substantive question about control systems.",
+          "elapsed_ms": 7964.5
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What does the PID control law look like?' -> 03_control_systems(0.50), 03_control_systems(0.42), 03_control_systems(0.25)",
-          "elapsed_ms": 35.4,
+          "elapsed_ms": 38.1,
           "hits": [
             {
               "source": "03_control_systems",
@@ -390,13 +440,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage includes the PID control law formula u(t)=Kp\u00b7e(t)+Ki\u222be dt+Kd\u00b7de/dt.)",
-          "elapsed_ms": 758.0
+          "detail": "relevant=True (Contains the PID control law formula.)",
+          "elapsed_ms": 814.5
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 259 chars",
-          "elapsed_ms": 8385.3
+          "detail": "grounded answer, 271 chars",
+          "elapsed_ms": 951.5
         }
       ]
     },
@@ -420,19 +470,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The reflection coefficient \u0393 for a load that does not match the line\u2019s characteristic impedance is calculated as  \n\n\\[\n\\Gamma = \\frac{Z_L - Z_0}{Z_L + Z_0},\n\\]\n\nwhere \\(Z_L\\) is the load impedance and \\(Z_0\\) is the line\u2019s characteristic impedance. (Source: **[06_transmission_lines] Transmission Lines and Electromagnetics \u2013 Lecture Notes**)",
+      "answer": "The reflection coefficient for a mismatched load is calculated as  \n\n\\[\n\\Gamma = \\frac{Z_L - Z_0}{Z_L + Z_0},\n\\]\n\nwhere \\(Z_L\\) is the load impedance and \\(Z_0\\) is the characteristic impedance of the line.  \nThis formula is given in the lecture notes on transmission lines. Source: [06_transmission_lines].",
       "n_spans": 4,
-      "wall_ms": 19472.5,
+      "node_ms": {
+        "router": 5246.8,
+        "retrieve": 40.9,
+        "grade": 662.1,
+        "generate": 984.1
+      },
+      "model_ms": 2521.7,
+      "wall_ms": 6958.0,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The question asks for a formula but does not explicitly contain \"formula\"/\"equation\"/\"expression\".",
-          "elapsed_ms": 4324.8
+          "detail": "-> retrieve: Substantive question about transmission line reflection coefficient.",
+          "elapsed_ms": 5246.8
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'How is the reflection coefficient of a mismatched load compu' -> 06_transmission_lines(0.44), 06_transmission_lines(0.30), 01_signals_and_systems(0.27)",
-          "elapsed_ms": 45.9,
+          "elapsed_ms": 40.9,
           "hits": [
             {
               "source": "06_transmission_lines",
@@ -454,13 +511,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage provides the formula Gamma = (ZL - Z0)/(ZL + Z0) for the reflection coefficient of a mismatched load.)",
-          "elapsed_ms": 7763.6
+          "detail": "relevant=True (Passage includes the formula for the reflection coefficient: Gamma = (ZL - Z0)/(ZL + Z0).)",
+          "elapsed_ms": 662.1
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 342 chars",
-          "elapsed_ms": 7327.3
+          "detail": "grounded answer, 307 chars",
+          "elapsed_ms": 984.1
         }
       ]
     },
@@ -484,19 +541,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "A quarter\u2011wave transformer is a \u03bb\u20444\u2011long section of line whose characteristic impedance is chosen as the geometric mean of the line and load impedances,  \n\n\\[\nZ_0'=\\sqrt{Z_0\\,Z_L}.\n\\]\n\nAt a length of one\u2011quarter wavelength this section transforms the load impedance \\(Z_L\\) to the line impedance \\(Z_0\\), eliminating reflections and giving a matched line. (Source:\u202f[06_transmission_lines])",
+      "answer": "A quarter\u2011wave transformer matches a transmission line by inserting a section of line whose length is one\u2011quarter of the operating wavelength (\u03bb/4) and whose characteristic impedance is the geometric mean of the line and load impedances:  \n\n\\[\nZ_0' = \\sqrt{Z_0\\,Z_L}.\n\\]\n\nThis section transforms the load impedance to equal the line\u2019s characteristic impedance, eliminating reflections. (Source: [06_transmission_lines])",
       "n_spans": 4,
-      "wall_ms": 19265.9,
+      "node_ms": {
+        "router": 3505.1,
+        "retrieve": 42.8,
+        "grade": 519.6,
+        "generate": 681.0
+      },
+      "model_ms": 4704.6,
+      "wall_ms": 4771.2,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Substantive question about transmission line matching requiring note content.",
-          "elapsed_ms": 4714.3
+          "detail": "-> retrieve: Substantive question about transmission line matching.",
+          "elapsed_ms": 3505.1
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'How does a quarter-wave transformer match a transmission lin' -> 06_transmission_lines(0.59), 06_transmission_lines(0.53), 08_digital_signal_processing(0.28)",
-          "elapsed_ms": 49.5,
+          "elapsed_ms": 42.8,
           "hits": [
             {
               "source": "06_transmission_lines",
@@ -518,13 +582,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage explicitly explains that a quarter-wave transformer with impedance Z0' = sqrt(Z0*ZL) matches a load to a transmission line.)",
-          "elapsed_ms": 7006.5
+          "detail": "relevant=True (Passage explicitly states that a quarter-wave transformer with impedance sqrt(Z0*ZL) matches a load to a line.)",
+          "elapsed_ms": 519.6
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 389 chars",
-          "elapsed_ms": 7483.3
+          "detail": "grounded answer, 419 chars",
+          "elapsed_ms": 681.0
         }
       ]
     },
@@ -547,19 +611,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "A Zener diode is connected in reverse bias so that it enters its breakdown region; once breakdown begins it conducts a large current while the voltage across the diode stays essentially constant. Because that voltage remains fixed over a wide range of current, the Zener diode can be used to clamp or regulate a circuit\u2019s voltage. (Source:\u202f[05_semiconductor_devices]\u202flecture notes)",
+      "answer": "A Zener diode is reverse\u2011biased until it reaches its breakdown voltage. Once in this reverse\u2011breakdown region, it maintains a nearly constant voltage across its terminals regardless of changes in the applied reverse voltage or load current. This constant\u2011voltage characteristic makes it useful as a voltage regulator. (Source: [05_semiconductor_devices])",
       "n_spans": 4,
-      "wall_ms": 19698.9,
+      "node_ms": {
+        "router": 1371.1,
+        "retrieve": 40.4,
+        "grade": 1200.5,
+        "generate": 805.0
+      },
+      "model_ms": 3375.3,
+      "wall_ms": 3439.7,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The question asks for an explanation of a Zener diode\u2019s voltage regulation, which is a substantive topic requiring retrieval from the lecture notes.",
-          "elapsed_ms": 6112.7
+          "detail": "-> retrieve: Substantive question about semiconductor notes.",
+          "elapsed_ms": 1371.1
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'How does a Zener diode regulate a voltage?' -> 05_semiconductor_devices(0.51), 05_semiconductor_devices(0.29), 05_semiconductor_devices(0.25)",
-          "elapsed_ms": 48.7,
+          "elapsed_ms": 40.4,
           "hits": [
             {
               "source": "05_semiconductor_devices",
@@ -581,13 +652,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage states that a Zener diode operates in reverse breakdown and is used for voltage regulation, directly addressing how it regulates voltage.)",
-          "elapsed_ms": 5293.0
+          "detail": "relevant=True (Passage mentions Zener diode operates in reverse breakdown and is used for voltage regulation.)",
+          "elapsed_ms": 1200.5
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 381 chars",
-          "elapsed_ms": 8231.8
+          "detail": "grounded answer, 354 chars",
+          "elapsed_ms": 805.0
         }
       ]
     },
@@ -610,19 +681,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The transconductance of a MOSFET operating in saturation is  \n\n\\[\ng_m = \\frac{2 I_D}{V_{GS}-V_{TH}} .\n\\]\n\n(From the \u201cField Effect Transistors\u201d section of\u202f[05_semiconductor_devices].)",
+      "answer": "The transconductance of a MOSFET in saturation is  \n\n\\[\ng_m = \\frac{2I_D}{V_{GS}-V_{TH}}\n\\]\n\nwhere \\(I_D\\) is the drain current and \\(V_{GS}-V_{TH}\\) is the over\u2011drive voltage.  \nThis follows from the saturation current equation \\(I_D = \\tfrac12 k_n (V_{GS}-V_{TH})^2\\).  \nSource: [05_semiconductor_devices].",
       "n_spans": 4,
-      "wall_ms": 20376.3,
+      "node_ms": {
+        "router": 2289.0,
+        "retrieve": 48.6,
+        "grade": 1081.8,
+        "generate": 963.6
+      },
+      "model_ms": 4332.8,
+      "wall_ms": 4405.1,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: substantive question about MOSFET transconductance, requires note citation.",
-          "elapsed_ms": 5265.7
+          "detail": "-> retrieve: Substantive question about MOSFET transconductance.",
+          "elapsed_ms": 2289.0
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What is the transconductance of a MOSFET in saturation?' -> 05_semiconductor_devices(0.60), 05_semiconductor_devices(0.35), 05_semiconductor_devices(0.33)",
-          "elapsed_ms": 45.0,
+          "elapsed_ms": 48.6,
           "hits": [
             {
               "source": "05_semiconductor_devices",
@@ -644,13 +722,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage explicitly defines transconductance gm in saturation as gm = 2*Id/(Vgs - Vth).)",
-          "elapsed_ms": 8876.6
+          "detail": "relevant=True (Passage includes the formula gm = 2*Id/(Vgs - Vth) for a MOSFET in saturation.)",
+          "elapsed_ms": 1081.8
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 182 chars",
-          "elapsed_ms": 6171.8
+          "detail": "grounded answer, 308 chars",
+          "elapsed_ms": 963.6
         }
       ]
     },
@@ -673,19 +751,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The modulation index for amplitude modulation (AM) is  \n\n\\[\nm = \\frac{A_m}{A_c},\n\\]\n\nthe ratio of the message (modulating) amplitude \\(A_m\\) to the carrier amplitude \\(A_c\\)\u301004_communication_systems\u3011.",
+      "answer": "The modulation index for amplitude modulation is  \n\n\\(m = \\dfrac{A_m}{A_c}\\), the ratio of the message amplitude to the carrier amplitude.  \nFor distortion\u2011free demodulation it must satisfy \\(0 < m \\le 1\\).  \n\nSource: [04_communication_systems] Lecture Notes.",
       "n_spans": 4,
-      "wall_ms": 19432.7,
+      "node_ms": {
+        "router": 36929.6,
+        "retrieve": 47.4,
+        "grade": 612.5,
+        "generate": 759.7
+      },
+      "model_ms": 38300.8,
+      "wall_ms": 38370.3,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: substantive question about modulation index.",
-          "elapsed_ms": 5698.3
+          "detail": "-> retrieve: Substantive question about amplitude modulation.",
+          "elapsed_ms": 36929.6
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What is the modulation index for amplitude modulation?' -> 04_communication_systems(0.66), 04_communication_systems(0.52), 04_communication_systems(0.45)",
-          "elapsed_ms": 40.8,
+          "elapsed_ms": 47.4,
           "hits": [
             {
               "source": "04_communication_systems",
@@ -707,13 +792,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage defines modulation index for AM as m = Am/Ac (ratio of message amplitude to carrier amplitude).)",
-          "elapsed_ms": 5411.0
+          "detail": "relevant=True (Passage defines AM modulation index as m = Am/Ac.)",
+          "elapsed_ms": 612.5
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 200 chars",
-          "elapsed_ms": 8271.6
+          "detail": "grounded answer, 259 chars",
+          "elapsed_ms": 759.7
         }
       ]
     },
@@ -735,17 +820,23 @@
       "behaviour_ok": true,
       "answer": "Using the calculator: 2*pi*50*0.001 = 0.314159.",
       "n_spans": 3,
-      "wall_ms": 3952.1,
+      "node_ms": {
+        "router": 1347.9,
+        "tool": 1.9,
+        "generate": 0.0
+      },
+      "model_ms": 1347.5,
+      "wall_ms": 1373.1,
       "trace": [
         {
           "node": "router",
           "detail": "-> tool: Bare arithmetic expression to evaluate.",
-          "elapsed_ms": 3927.0
+          "elapsed_ms": 1347.9
         },
         {
           "node": "tool",
           "detail": "calculator(2*pi*50*0.001) ok=True",
-          "elapsed_ms": 11.4
+          "elapsed_ms": 1.9
         },
         {
           "node": "generate",
@@ -772,17 +863,23 @@
       "behaviour_ok": true,
       "answer": "Using the calculator: 3^2 + 4^2 = 25.",
       "n_spans": 3,
-      "wall_ms": 4886.0,
+      "node_ms": {
+        "router": 1931.8,
+        "tool": 0.5,
+        "generate": 0.0
+      },
+      "model_ms": 1931.5,
+      "wall_ms": 1950.4,
       "trace": [
         {
           "node": "router",
-          "detail": "-> tool: bare arithmetic expression to evaluate.",
-          "elapsed_ms": 4868.9
+          "detail": "-> tool: bare arithmetic expression",
+          "elapsed_ms": 1931.8
         },
         {
           "node": "tool",
           "detail": "calculator(3^2 + 4^2) ok=True",
-          "elapsed_ms": 3.5
+          "elapsed_ms": 0.5
         },
         {
           "node": "generate",
@@ -809,12 +906,18 @@
       "behaviour_ok": true,
       "answer": "Standing-wave ratio from reflection coeff: `VSWR = (1 + |Gamma|) / (1 - |Gamma|)` [source: 06_transmission_lines]",
       "n_spans": 3,
-      "wall_ms": 3691.4,
+      "node_ms": {
+        "router": 882.3,
+        "tool": 0.2,
+        "generate": 0.1
+      },
+      "model_ms": 882.0,
+      "wall_ms": 903.0,
       "trace": [
         {
           "node": "router",
-          "detail": "-> tool: Explicit request for a formula involving a listed constant.",
-          "elapsed_ms": 3678.9
+          "detail": "-> tool: explicit formula request for VSWR.",
+          "elapsed_ms": 882.3
         },
         {
           "node": "tool",
@@ -824,7 +927,7 @@
         {
           "node": "generate",
           "detail": "tool answer, 113 chars",
-          "elapsed_ms": 0.4
+          "elapsed_ms": 0.1
         }
       ]
     },
@@ -846,17 +949,23 @@
       "behaviour_ok": true,
       "answer": "Sample above twice the highest frequency or alias: `fs > 2 * f_max` [source: 01_signals_and_systems]",
       "n_spans": 3,
-      "wall_ms": 793.3,
+      "node_ms": {
+        "router": 5017.5,
+        "tool": 0.1,
+        "generate": 0.1
+      },
+      "model_ms": 855.9,
+      "wall_ms": 5034.7,
       "trace": [
         {
           "node": "router",
-          "detail": "-> tool: explicit request for Nyquist rate formula.",
-          "elapsed_ms": 781.5
+          "detail": "-> tool: explicit formula request for Nyquist rate.",
+          "elapsed_ms": 5017.5
         },
         {
           "node": "tool",
           "detail": "formula_lookup(nyquist) ok=True",
-          "elapsed_ms": 0.0
+          "elapsed_ms": 0.1
         },
         {
           "node": "generate",
@@ -879,19 +988,24 @@
       "keyword_hit": null,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "I\u2019m sorry, but there\u2019s no question or relevant context provided for me to answer. Please provide a specific question and any necessary context.",
+      "answer": "I don\u2019t have any context to answer your question. The context does not contain the answer.",
       "n_spans": 2,
-      "wall_ms": 6577.6,
+      "node_ms": {
+        "router": 22381.5,
+        "direct": 755.2
+      },
+      "model_ms": 2713.7,
+      "wall_ms": 23153.0,
       "trace": [
         {
           "node": "router",
-          "detail": "-> direct: greeting only.",
-          "elapsed_ms": 5770.2
+          "detail": "-> direct: Greeting.",
+          "elapsed_ms": 22381.5
         },
         {
           "node": "direct",
           "detail": "answered without retrieval",
-          "elapsed_ms": 797.1
+          "elapsed_ms": 755.2
         }
       ]
     },
@@ -913,19 +1027,26 @@
       "keyword_hit": null,
       "in_scope": false,
       "behaviour_ok": true,
-      "answer": "The provided context does not contain any information about the 2018 FIFA World Cup winner. (Source: [05_semiconductor_devices], [06_transmission_lines], [03_control_systems])",
+      "answer": "The context does not contain the answer.  \nSource: [05_semiconductor_devices], [06_transmission_lines], [03_control_systems].",
       "n_spans": 4,
-      "wall_ms": 14913.3,
+      "node_ms": {
+        "router": 5990.1,
+        "retrieve": 38.4,
+        "grade": 2814.6,
+        "generate": 2665.3
+      },
+      "model_ms": 11468.8,
+      "wall_ms": 11531.9,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Question is outside the allowed lecture-note subjects.",
-          "elapsed_ms": 3378.7
+          "detail": "-> retrieve: Question outside scope",
+          "elapsed_ms": 5990.1
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'Who won the 2018 FIFA World Cup?' -> 05_semiconductor_devices(0.09), 05_semiconductor_devices(0.07), 06_transmission_lines(0.06)",
-          "elapsed_ms": 37.0,
+          "elapsed_ms": 38.4,
           "hits": [
             {
               "source": "05_semiconductor_devices",
@@ -947,13 +1068,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=False (Passages discuss electronics and engineering topics; they do not mention the 2018 FIFA World Cup or its winner.)",
-          "elapsed_ms": 3900.6
+          "detail": "relevant=False (Passages do not mention FIFA World Cup or its 2018 winner.)",
+          "elapsed_ms": 2814.6
         },
         {
           "node": "generate",
-          "detail": "low answer, 175 chars",
-          "elapsed_ms": 7583.2
+          "detail": "low answer, 125 chars",
+          "elapsed_ms": 2665.3
         }
       ]
     },
@@ -974,19 +1095,26 @@
       "keyword_hit": null,
       "in_scope": false,
       "behaviour_ok": true,
-      "answer": "The provided context does not contain any information about the capital of France. Therefore, I cannot answer the question from the given documents. (Source: all listed documents)",
+      "answer": "The context does not contain the answer. (Source: [03_control_systems] and [08_digital_signal_processing] lecture notes)",
       "n_spans": 4,
-      "wall_ms": 17973.6,
+      "node_ms": {
+        "router": 1513.5,
+        "retrieve": 42.6,
+        "grade": 918.4,
+        "generate": 847.2
+      },
+      "model_ms": 3277.5,
+      "wall_ms": 3342.2,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: question is substantive but outside lecture topics.",
-          "elapsed_ms": 3833.6
+          "detail": "-> retrieve: question outside scope of ECE lecture notes.",
+          "elapsed_ms": 1513.5
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What is the capital of France?' -> 03_control_systems(0.12), 03_control_systems(0.09), 03_control_systems(0.08)",
-          "elapsed_ms": 31.4,
+          "elapsed_ms": 42.6,
           "hits": [
             {
               "source": "03_control_systems",
@@ -1008,13 +1136,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=False (Passages discuss control systems and signal processing; they do not contain information about France's capital.)",
-          "elapsed_ms": 6045.4
+          "detail": "relevant=False (Passages discuss control systems and DSP, no mention of France or its capital.)",
+          "elapsed_ms": 918.4
         },
         {
           "node": "generate",
-          "detail": "low answer, 179 chars",
-          "elapsed_ms": 8050.8
+          "detail": "low answer, 120 chars",
+          "elapsed_ms": 847.2
         }
       ]
     },
@@ -1038,19 +1166,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The Nyquist rate (from\u202f[01_signals_and_systems]) is a sampling requirement: a band\u2011limited signal whose highest frequency is\u202ff\u202fmax must be sampled at a rate\u202ff\u202fs\u202f>\u202f2\u202ff\u202fmax (the Nyquist rate) to avoid aliasing.  \n\nShannon\u2019s channel capacity (from\u202f[04_communication_systems]\u202f3. Information Theory) gives the maximum error\u2011free data rate for a noisy channel:\u202fC\u202f=\u202fB\u202f\u00b7\u202flog\u2082(1\u202f+\u202fS/N)\u202fbits/s, where\u202fB\u202fis the channel bandwidth and\u202fS/N\u202fthe signal\u2011to\u2011noise ratio.  \n\nThus, the Nyquist rate concerns how fast a continuous\u2011time signal must be sampled for perfect reconstruction, while Shannon\u2019s capacity limits how many bits per second can be transmitted reliably over a given bandwidth in the presence of noise. Both involve bandwidth, but Nyquist is a sampling theorem, whereas Shannon\u2019s formula is an information\u2011theoretic bound.",
+      "answer": "The Nyquist rate (2\u202ff_max) is the minimum sampling frequency required to reconstruct a band\u2011limited signal without aliasing, as described in the \u201cSampling and the Nyquist Theorem\u201d section of [04_communication_systems]. Shannon\u2019s channel capacity (C\u202f=\u202fB\u202flog\u2082(1\u202f+\u202fS/N)) gives the maximum achievable data rate for error\u2011free transmission over a noisy channel, from the \u201cInformation Theory\u201d section of the same document. Thus, the Nyquist rate concerns sampling of analog signals, while Shannon\u2019s capacity concerns the theoretical limit of digital data transmission over a given bandwidth and signal\u2011to\u2011noise ratio.",
       "n_spans": 4,
-      "wall_ms": 21195.2,
+      "node_ms": {
+        "router": 2314.2,
+        "retrieve": 38.6,
+        "grade": 1779.8,
+        "generate": 1493.1
+      },
+      "model_ms": 5586.0,
+      "wall_ms": 5646.5,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The user asks for a substantive comparison, not a bare calculation or explicit formula request.",
-          "elapsed_ms": 5378.8
+          "detail": "-> retrieve: Substantive comparison question.",
+          "elapsed_ms": 2314.2
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'Compare the Nyquist rate with Shannon's channel capacity.' -> 04_communication_systems(0.61), 04_communication_systems(0.47), 04_communication_systems(0.38)",
-          "elapsed_ms": 37.9,
+          "elapsed_ms": 38.6,
           "hits": [
             {
               "source": "04_communication_systems",
@@ -1072,13 +1207,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passages include definitions of Nyquist rate (sampling theorem) and Shannon channel capacity (Shannon-Hartley theorem), providing the necessary information to c)",
-          "elapsed_ms": 7323.8
+          "detail": "relevant=True (Passages define both the Nyquist rate (sampling theorem) and Shannon's channel capacity (Shannon-Hartley theorem), providing the necessary information to compar)",
+          "elapsed_ms": 1779.8
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 819 chars",
-          "elapsed_ms": 8441.0
+          "detail": "grounded answer, 611 chars",
+          "elapsed_ms": 1493.1
         }
       ]
     },
@@ -1100,19 +1235,26 @@
       "keyword_hit": null,
       "in_scope": false,
       "behaviour_ok": true,
-      "answer": "The provided context does not contain the Friis transmission equation, so I cannot give its formula from these sources. (Sources:\u202f[06_transmission_lines] and related lecture notes.)",
+      "answer": "The provided context does not contain the Friis transmission equation.  \nSource: [06_transmission_lines] Lecture Notes.",
       "n_spans": 4,
-      "wall_ms": 21833.2,
+      "node_ms": {
+        "router": 2249.1,
+        "retrieve": 46.1,
+        "grade": 772.5,
+        "generate": 762.9
+      },
+      "model_ms": 3783.2,
+      "wall_ms": 3856.9,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The request is for a specific formula (Friis transmission equation) not covered by the TOOL list, so it must be answered by retrieving from the lecture notes.",
-          "elapsed_ms": 5174.7
+          "detail": "-> retrieve: Substantive question about a formula not covered by the tool list.",
+          "elapsed_ms": 2249.1
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'What is the formula for the Friis transmission equation?' -> 06_transmission_lines(0.45), 06_transmission_lines(0.42), 08_digital_signal_processing(0.33)",
-          "elapsed_ms": 33.0,
+          "elapsed_ms": 46.1,
           "hits": [
             {
               "source": "06_transmission_lines",
@@ -1134,13 +1276,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=False (Passages discuss transmission line basics and Maxwell equations but do not provide the Friis transmission equation formula.)",
-          "elapsed_ms": 9665.4
+          "detail": "relevant=False (Passages discuss transmission lines, DSP, and signals, but do not contain the Friis transmission equation.)",
+          "elapsed_ms": 772.5
         },
         {
           "node": "generate",
-          "detail": "low answer, 181 chars",
-          "elapsed_ms": 6947.0
+          "detail": "low answer, 119 chars",
+          "elapsed_ms": 762.9
         }
       ]
     },
@@ -1164,19 +1306,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The 8051 is supplied in a 40\u2011pin DIP package, and its machine cycle consists of 12 oscillator periods \u2013 for example, with a 12\u202fMHz crystal the cycle is 1\u202f\u00b5s. (Source: **[07_microprocessors]**).",
+      "answer": "The 8051 is packaged in a 40\u2011pin dual\u2011in\u2011line package (DIP\u201140).  \nIts machine cycle is 12 oscillator periods; with a 12\u202fMHz crystal this equals 1\u202f\u00b5s per cycle.  \n\nSource: [07_microprocessors] lecture notes.",
       "n_spans": 4,
-      "wall_ms": 17504.3,
+      "node_ms": {
+        "router": 2113.1,
+        "retrieve": 62.1,
+        "grade": 1158.2,
+        "generate": 1121.4
+      },
+      "model_ms": 4391.5,
+      "wall_ms": 4481.6,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: The question asks for factual details about the 8051 microprocessor, not a calculation or explicit formula.",
-          "elapsed_ms": 4945.4
+          "detail": "-> retrieve: substantive question about 8051 microprocessor.",
+          "elapsed_ms": 2113.1
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'How many pins does the 8051 have and what is its machine cyc' -> 07_microprocessors(0.68), 07_microprocessors(0.65), 02_digital_electronics(0.30)",
-          "elapsed_ms": 38.6,
+          "elapsed_ms": 62.1,
           "hits": [
             {
               "source": "07_microprocessors",
@@ -1198,13 +1347,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage provides both the pin count (40 pins) and the machine cycle time (1\u202f\u00b5s) for the 8051.)",
-          "elapsed_ms": 5035.9
+          "detail": "relevant=True (Passage 1 provides both the 40-pin count and the 1\u00b5s machine cycle time.)",
+          "elapsed_ms": 1158.2
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 193 chars",
-          "elapsed_ms": 7468.9
+          "detail": "grounded answer, 206 chars",
+          "elapsed_ms": 1121.4
         }
       ]
     },
@@ -1227,19 +1376,26 @@
       "keyword_hit": true,
       "in_scope": true,
       "behaviour_ok": true,
-      "answer": "The FM bandwidth is estimated with Carson\u2019s rule, which adds the peak frequency deviation\u202f\u0394f to the highest message frequency\u202ffm and doubles the result:  \n\n\\[\n\\text{BW} \\approx 2\\bigl(\\Delta f + f_m\\bigr)=2(\\beta+1)f_m,\n\\]\n\nwhere\u202f\u03b2\u202f=\u202f\u0394f/fm is the modulation index.\u202f(Source:\u202f[04_communication_systems]\u202f2.\u202fAngle\u202fModulation)",
+      "answer": "Carson\u2019s rule gives an estimate of an FM signal\u2019s bandwidth.  \nIf the peak frequency deviation is \u0394f and the highest message frequency is fm, then  \n\n\\[\n\\text{BW}\\approx 2(\\Delta f + f_m)=2(\\beta+1)f_m,\n\\]\n\nwhere \u03b2 = \u0394f/fm is the modulation index.  \n(Source: [04_communication_systems] \u201cAngle Modulation\u201d section.)",
       "n_spans": 4,
-      "wall_ms": 15436.6,
+      "node_ms": {
+        "router": 1882.5,
+        "retrieve": 40.8,
+        "grade": 956.1,
+        "generate": 740.9
+      },
+      "model_ms": 3578.2,
+      "wall_ms": 3642.6,
       "trace": [
         {
           "node": "router",
-          "detail": "-> retrieve: Substantive communications question requiring note citation.",
-          "elapsed_ms": 4919.1
+          "detail": "-> retrieve: Substantive question about FM bandwidth estimation",
+          "elapsed_ms": 1882.5
         },
         {
           "node": "retrieve",
           "detail": "k=4 for 'How is the bandwidth of an FM signal estimated from its mess' -> 04_communication_systems(0.64), 04_communication_systems(0.47), 04_communication_systems(0.37)",
-          "elapsed_ms": 33.6,
+          "elapsed_ms": 40.8,
           "hits": [
             {
               "source": "04_communication_systems",
@@ -1261,13 +1417,13 @@
         },
         {
           "node": "grade",
-          "detail": "relevant=True (Passage includes Carson's rule linking FM bandwidth to peak deviation (delta_f) and message frequency (fm))",
-          "elapsed_ms": 8525.3
+          "detail": "relevant=True (Passage includes Carson's rule for FM bandwidth estimation.)",
+          "elapsed_ms": 956.1
         },
         {
           "node": "generate",
-          "detail": "grounded answer, 321 chars",
-          "elapsed_ms": 1943.8
+          "detail": "grounded answer, 314 chars",
+          "elapsed_ms": 740.9
         }
       ]
     }

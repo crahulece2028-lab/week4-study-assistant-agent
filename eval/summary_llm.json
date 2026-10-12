@@ -6,14 +6,22 @@
   "tool_success_rate": 1.0,
   "direct_ok_rate": 1.0,
   "out_of_scope_refusal_rate": 1.0,
-  "grounded_confidence_rate": 0.9286,
+  "grounded_confidence_rate": 1.0,
   "latency_ms": {
-    "first_run_warmup": 2791.8,
-    "mean": 14030.6,
-    "median": 17620.1,
-    "p95": 21195.2
+    "first_run_warmup": 2668.4,
+    "mean": 7221.1,
+    "median": 4405.1,
+    "p95": 11531.9
   },
-  "langsmith_traced_remotely": false,
+  "langsmith_traced_remotely": true,
+  "langsmith_project": "week4-study-assistant",
+  "model_latency_ms": {
+    "mean": 5640.2,
+    "median": 3377.8,
+    "p95": 9728.7
+  },
+  "config": "llm",
+  "model": "openai/gpt-oss-20b",
   "llm_mode": "groq",
   "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
 }

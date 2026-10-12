@@ -1,0 +1,23 @@
+{
+  "n_questions": 22,
+  "routing_accuracy": 1.0,
+  "retrieval_hit_rate": 1.0,
+  "answer_keyword_rate": 0.9286,
+  "tool_success_rate": 1.0,
+  "direct_ok_rate": 1.0,
+  "out_of_scope_refusal_rate": 0.6667,
+  "grounded_confidence_rate": 1.0,
+  "latency_ms": {
+    "first_run_warmup": 69.7,
+    "mean": 50.9,
+    "median": 56.0,
+    "p95": 68.4
+  },
+  "langsmith_traced_remotely": true,
+  "langsmith_project": "week4-study-assistant",
+  "model_latency_ms": null,
+  "config": "offline",
+  "model": "offline-extractive",
+  "llm_mode": "offline",
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2"
+}

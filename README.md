@@ -8,7 +8,7 @@ when one is present.
 This is the Week 4 capstone: tasks 4.1 (RAG), 4.2 (multi-step workflow), 4.3 (observability &
 evaluation) and 4.4 (demo + report) are all implemented in this one repository.
 
-**Live demo:** _pending deployment_
+**Live demo:** _pending deployment_ · **Repository:** <https://github.com/crahulece2028-lab/week4-study-assistant-agent>
 
 ```
 round 1  route -> retrieve -> grade -+-> generate (grounded, cited)
@@ -44,12 +44,40 @@ Copy `.env.example` to `.env` and set any of:
 
 | Variable | Effect |
 |---|---|
-| `GROQ_API_KEY` | generation via `llama-3.3-70b-versatile` (free tier) |
+| `GROQ_API_KEY` | generation via `openai/gpt-oss-120b` (free tier) |
 | `GOOGLE_API_KEY` | generation via `gemini-2.0-flash` (free tier) |
 | `LANGSMITH_API_KEY` + `LANGSMITH_TRACING=true` | remote traces in the `LANGSMITH_PROJECT` |
 
 Precedence is Groq -> Gemini -> offline. Everything, including the evaluation, runs without any of
 them.
+
+## Deploy (Streamlit Community Cloud)
+
+The app is deploy-ready: `src/app.py` mirrors host secrets into the environment and **builds the FAISS
+index itself** on first run, so nothing has to be committed.
+
+1. Push this repo to GitHub (already at
+   <https://github.com/crahulece2028-lab/week4-study-assistant-agent>).
+2. Go to <https://share.streamlit.io> -> **New app** -> pick the repo/branch (`main`).
+3. **Main file path:** `src/app.py`.
+4. **Advanced settings -> Secrets** - paste (TOML):
+
+   ```toml
+   GROQ_API_KEY = "gsk_..."          # optional: enables the hosted LLM
+   LANGSMITH_API_KEY = "lsv2_pt_..."  # optional: remote traces
+   LANGSMITH_TRACING = "true"
+   LANGSMITH_PROJECT = "week4-study-assistant"
+   ```
+
+   With no secrets the app still runs on the offline extractive model.
+5. Deploy. The first load shows "building the FAISS index...", then serves the chat UI.
+
+After it is live, replace `_pending deployment_` with the URL in `README.md`, section 5 of
+`docs/4.4_capstone_report.md`, and the `LIVE_DEMO_URL` constant in `docs/build_report.py` (then
+`python docs/build_report.py`).
+
+**Hugging Face Spaces** works the same way: create a Streamlit-SDK Space, set **app file** to
+`src/app.py`, and put the same keys in **Settings -> Variables and secrets**.
 
 ## Deliverables
 
@@ -62,14 +90,19 @@ them.
 
 ## Evaluation at a glance
 
-22-question labelled set, offline configuration (median 26 ms/query):
+22-question labelled set, both configurations:
 
-| routing | retrieval hit | answer keyword | tool | refusal (out-of-scope) |
-|---|---|---|---|---|
-| 100% | 100% | 93% | 100% | 67% |
+| metric | offline | llm (Groq `gpt-oss-20b`) |
+|---|---|---|
+| routing | 100% | 100% |
+| retrieval hit | 100% | 100% |
+| answer keyword | 93% | 100% |
+| tool | 100% | 100% |
+| refusal (out-of-scope) | 67% | 100% |
+| latency (median) | 56 ms | 4.4 s |
 
 The 100%s are a ceiling from a small self-authored set; the honest story is in the two that are not
-perfect. Both failures are analysed in `docs/4.3_evaluation.md`:
+perfect (and which the hosted model fixes). Both failures are analysed in `docs/4.3_evaluation.md`:
 
 - **q20 Friis equation** - a question that *sounds* in-domain gets a fluent but wrong cited answer,
   because relevance is graded lexically. This is the case for a generative grader.
@@ -83,7 +116,7 @@ unanswerable questions, same correctness).
 ## Repository layout
 
 ```
-study_assistant_agent/
+week4-study-assistant-agent/
   data/build_corpus.py      generates the 8-source corpus (reportlab)
   src/
     config.py               paths + backend selection (Groq/Gemini/offline)
@@ -98,10 +131,11 @@ study_assistant_agent/
   eval/
     testset.json            22 labelled questions
     run_eval.py             scoring + trace capture                 (task 4.3)
+    langsmith_eval.py       dataset + evaluators on the hosted suite (task 4.3)
     local_tracer.py         state trace -> waterfall PNG
     improvement_experiment.py  chunk-size + retry-policy ablations
   docs/                     4.1-4.4 write-ups, diagram, traces
-  index/                    built FAISS store (git-ignored)
+  index/                    built FAISS store (git-ignored, auto-built on first run)
 ```
 
 ## Design decisions worth stating

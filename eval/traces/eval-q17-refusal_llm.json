@@ -1,18 +1,18 @@
 {
   "question": "Who won the 2018 FIFA World Cup?",
-  "total_ms": 14899.5,
+  "total_ms": 11508.4,
   "spans": [
     {
       "node": "router",
-      "detail": "-> retrieve: Question is outside the allowed lecture-note subjects.",
-      "elapsed_ms": 3378.7,
+      "detail": "-> retrieve: Question outside scope",
+      "elapsed_ms": 5990.1,
       "start_ms": 0.0,
-      "end_ms": 3378.7
+      "end_ms": 5990.1
     },
     {
       "node": "retrieve",
       "detail": "k=4 for 'Who won the 2018 FIFA World Cup?' -> 05_semiconductor_devices(0.09), 05_semiconductor_devices(0.07), 06_transmission_lines(0.06)",
-      "elapsed_ms": 37.0,
+      "elapsed_ms": 38.4,
       "hits": [
         {
           "source": "05_semiconductor_devices",
@@ -31,22 +31,22 @@
           "score": 0.0511
         }
       ],
-      "start_ms": 3378.7,
-      "end_ms": 3415.7
+      "start_ms": 5990.1,
+      "end_ms": 6028.5
     },
     {
       "node": "grade",
-      "detail": "relevant=False (Passages discuss electronics and engineering topics; they do not mention the 2018 FIFA World Cup or its winner.)",
-      "elapsed_ms": 3900.6,
-      "start_ms": 3415.7,
-      "end_ms": 7316.3
+      "detail": "relevant=False (Passages do not mention FIFA World Cup or its 2018 winner.)",
+      "elapsed_ms": 2814.6,
+      "start_ms": 6028.5,
+      "end_ms": 8843.1
     },
     {
       "node": "generate",
-      "detail": "low answer, 175 chars",
-      "elapsed_ms": 7583.2,
-      "start_ms": 7316.3,
-      "end_ms": 14899.5
+      "detail": "low answer, 125 chars",
+      "elapsed_ms": 2665.3,
+      "start_ms": 8843.1,
+      "end_ms": 11508.4
     }
   ]
 }
