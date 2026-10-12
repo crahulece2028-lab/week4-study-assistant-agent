@@ -177,7 +177,9 @@ def build() -> Path:
     el.append(Paragraph("5. Traces", H2))
     for name, cap in [("eval-q01-grounded", "grounded answer, happy path (local render)"),
                       ("langsmith-q01-grounded", "the same path, from the live LangSmith trace"),
+                      ("langsmith-q12-tool", "tool path from the live LangSmith trace"),
                       ("langsmith-q20-friis-miss", "the q20 Friis failure, from LangSmith"),
+                      ("langsmith-latency", "per-question trace latency (LangSmith)"),
                       ("eval-q17-retry-loop", "retry loop (floor off) on an unanswerable question")]:
         p = DOCS / "traces" / f"{name}.png"
         if p.exists():
